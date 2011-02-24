@@ -1,4 +1,4 @@
-package com.philipcali.utils.calendar
+package com.github.calendar
 package conversions
 
 import java.util.Calendar._

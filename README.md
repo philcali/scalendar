@@ -14,7 +14,7 @@ Scalendar is a pure Scala date api that interoperates quite nicely with
 
 A single import is all that's needed.
 
-    import com.philipcali.utils.calendar.Scalendar
+    import com.github.calendar.Scalendar
 
     val now = Scalendar.now
 

@@ -1,4 +1,4 @@
-package com.philipcali.utils
+package com.github
 package object calendar {
 
   import java.util.{Date, Calendar}
