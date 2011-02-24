@@ -1,6 +1,9 @@
 package com.philipcali.utils
 package calendar 
 
+import conversions._
+import operations.RichSupport
+
 import java.util.Calendar
 import Calendar._
 
@@ -76,92 +79,6 @@ object Scalendar {
   }
 }
 
-class FromConversion(number: Long) {
-  def second = number * 1000
-  def minute = second * 60
-  def hour = minute * 60
-  def day = hour * 24
-  def week = day * 7
-  def month = day * 30
-  def year = day * 365
-
-  def seconds = second
-  def minutes = minute
-  def hours = hour
-  def days = day
-  def weeks = week
-  def months = month
-  def years = year
-}
-
-class ToConversion(number: Long) {
-  def milliseconds = number
-  def seconds = number / 1000
-  def minutes = seconds / 60
-  def hours = minutes / 60
-  def days = hours / 24
-  def weeks = days / 7
-  def months  = days / 30
-  def years = days / 365
-}
-
-class Duration(from: Long, last: Long) extends RichSupport {
-  val start = new Scalendar(from)
-  val end = new Scalendar(last)
-
-  // This gives a duration rather strong support for
-  // pulling calendar values
-  protected val javaTime: Calendar = toCalendar(start)
-
-  def delta = new ToConversion(end.time - start.time)
-
-  def to(spot: Scalendar) = 
-    new Duration(start.time, spot.time)
-
-  def to(duration: Duration) =
-    new Duration(start.time, duration.end.time)
-
-  def + (duration: Duration) =
-    new Duration(start.time, end.time + duration.delta.milliseconds)
-
-  def - (duration: Duration) =
-    new Duration(start.time, end.time - duration.delta.milliseconds)
-
-  def traverse[A](value: Long)(fun: Duration => A) = {
-    val (max, min) = if(delta.milliseconds < 0) {
-      (0, (delta.milliseconds / value).toInt) 
-    } else {
-      ((delta.milliseconds / value).toInt, 0)
-    }
-    val mult = (num: Long) => if(num < 1) -1 * num else num
-
-    for(iter <- (min to max);
-        val dur = new Duration(start.time + mult(value * iter), 
-                               end.time - mult(value * (max - iter))))
-    yield(fun(dur))
-  }
-
-  def contains(cal: Scalendar) = cal isIn this
-  def contains(time: Long) = Scalendar(time) isIn this 
-
-  def reverse = new Duration(end.time, start.time)
-
-  def by(value: Long): List[Duration] = {
-    traverse(value)(dur => dur).toList
-  }
-
-  def next(value: Long) = {
-    val incrementer = if(delta.milliseconds < 0) -1 else 1
-    if(value > delta.milliseconds * incrementer) {
-      new Duration(start.time + delta.milliseconds, end.time)
-    } else {
-      new Duration(start.time + value * incrementer, end.time)
-    }
-  }
-
-  override def toString = "%s - %s" format(start, end)
-}
-
 object CalendarDayDuration {
   import Scalendar._
 
@@ -188,128 +105,6 @@ object CalendarMonthDuration {
     endWeek(zeroOut(nextMonth))
   }
 }
-
-trait CalendarOperations {
-  protected val javaTime: Calendar
-  
-  def millisecond(t: Int) = set(MILLISECOND, t)
-  def millisecond = javaTime.get(MILLISECOND)
-
-  def copyTime = {
-    val copied = Calendar.getInstance
-    copied.setTimeInMillis(javaTime.getTimeInMillis)
-    copied
-  }
-
-  def set(typ: Int, value: Int) = {
-    val copied = copyTime
-    copied.set(typ, value)
-    new Scalendar(copied.getTimeInMillis)
-  }
-}
-
-abstract class CalendarField {
-  val value: Int
-  def name: String
-  def is(field: Int) = value == field
-  override def equals(other: Any) = other match {
-    case field: CalendarField => this.value == field.value
-    case field: Int => this.value == field
-    case _ => false
-  }
-  override def toString = name
-}
-
-trait SecondFieldOperations extends CalendarOperations {
-  def second(t: Int) = set(SECOND, t)
-
-  def second = new CalendarField {
-    val value = javaTime.get(SECOND)
-    def name = value.toString
-  }
-}
-
-trait MinuteFieldOperations extends CalendarOperations {
-  def minute(t: Int) = set(MINUTE, t)
-
-  def minute = new CalendarField {
-    val value = javaTime.get(MINUTE)
-    def name = "%d:00" format(value)
-  }
-}
-
-trait HourFieldOperations extends CalendarOperations {
-  def hour(t: Int) = set(HOUR, t)
-
-  def hour = new CalendarField {
-    val value = javaTime.get(HOUR)
-    def name = "%d:00:00" format(value) 
-  }
-}
-
-trait DailyOperations extends CalendarOperations {
-  def inWeek = javaTime.get(DAY_OF_WEEK)
-  def isWeekend = inWeek == SUNDAY || inWeek == SATURDAY
-  def isWeekday = !isWeekend
-}
-
-trait DayFieldOperations extends DailyOperations { outer =>
-  def day = new DayField 
-
-  def day(t: Int) = set(DATE, t)
-
-  class DayField extends CalendarField with DailyOperations {
-    val javaTime = outer.javaTime
-    def name = Scalendar.dayOfWeek(inWeek)
-    def inYear = javaTime.get(DAY_OF_YEAR)
-    val value = javaTime.get(DATE)
-    override def toString = "%s the %d" format(name, value)
-  }
-}
-
-trait WeekFieldOperations extends CalendarOperations {
-  def week(t: Int) = set(WEEK_OF_MONTH, t)
-
-  def week = new WeekField
-
-  class WeekField extends CalendarField {
-    val value = javaTime.get(WEEK_OF_MONTH)
-    def inYear = javaTime.get(WEEK_OF_YEAR)
-    def name = value match {
-      case 1 => "first"
-      case 2 => "second"
-      case 3 => "third"
-      case 4 => "forth"
-      case 5 => "fifth"
-    }
-  }
-}
-
-trait MonthFieldOperations extends CalendarOperations {
-  def month(t: Int) = set(MONTH, t)
-
-  def month = new CalendarField {
-    val value = javaTime.get(MONTH)
-    def name = Scalendar.monthName(value)
-  }
-}
-
-trait YearFieldOperations extends CalendarOperations {
-  def year(t: Int) = set(YEAR, t)
-
-  def year = new CalendarField {
-    val value = javaTime.get(YEAR)
-    def name = "%d - %d" format(value, value + 1)
-  }
-}
-
-trait RichSupport extends YearFieldOperations 
-                     with MonthFieldOperations
-                     with WeekFieldOperations
-                     with DayFieldOperations
-                     with HourFieldOperations
-                     with MinuteFieldOperations
-                     with SecondFieldOperations
 
 class Scalendar(now: Long = System.currentTimeMillis) extends Ordered[Scalendar] 
                                                              with RichSupport {  
