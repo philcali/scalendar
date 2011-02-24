@@ -38,6 +38,23 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     dayLater.day.value should be === 2
   }
 
+  it should "be able to handle correct arthimetic" in {
+    val test = Scalendar(year = 2011, month = FEBRUARY, day=1)
+
+    val april = test + (2 months)
+
+    val yearfrom = test + (12 months)
+
+    (test + (1 month)).day.value should be === 1
+    (test + (1 week)).day.value should be === 8
+    (test + (1 week)).day.name should be === test.day.name
+    (test + (3 days)).day.value should be === 4
+    april.day.value should be === 1
+    april.month.name should be === "April"
+    yearfrom.month.name should be === test.month.name
+    yearfrom.day.value should be === test.day.value
+  }
+
   it should "be able to form a duration" in {
     val newDuration = test to "03/19/2011" to "04/21/2011" 
 
