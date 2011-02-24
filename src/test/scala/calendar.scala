@@ -1,7 +1,7 @@
-package com.philipcali
+package com.github
 package test
 
-import utils.calendar._
+import calendar._
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
