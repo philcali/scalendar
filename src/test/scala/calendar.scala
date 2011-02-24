@@ -45,21 +45,21 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be a traversable duration" in {
-    val duration = "02/01/2011" to ("03/01/2011" - 1)
+    val duration = "02/01/2011" to ("03/01/2011" - (1 millisecond))
   
     duration.start.day.value should be === 1
     duration.end.day.value should be === 28
  
     duration.traverse(1 week) { weekDuration =>
       weekDuration.traverse(1 day) { dayDuration =>
-        dayDuration.delta.hours should be === 23
+        dayDuration.delta.hours should be === 23 
       }
     }
   }
 
   it should "produce a calendar month fairly easily" in {
     val month = "2/14/2011".calendarMonth
-   
+ 
     month.by(1 week).foldLeft(0) {(a, b) => a + 1 } should be === 5
   }
 
@@ -91,16 +91,6 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     stuck.day.name should be === "Monday"
     stuck.isWeekday should be === true
     stuck.month.name should be === "February"
-  }
-
-  it should "be manual traversable via next" in {
-    val span = "2/1/2011" to "3/1/2011"
-
-    span.next(1 day).day.value should be === 2
-    span.next(2 week).day.value should be === 15
-    // This is greater than the duration, thus is maxes at
-    // the end 
-    span.next(3 month).month.value should be === MARCH
   }
 
   it should "be reversable" in {

@@ -4,8 +4,8 @@ package object calendar {
   import java.util.{Date, Calendar}
   import conversions.FromConversion
 
-  implicit def number2Conversion(num: Long) = 
-    new FromConversion(num.toLong)
+  implicit def number2Conversion(num: Int) = 
+    new FromConversion(num)
 
   implicit def fromString(dateString: String)
                          (implicit pattern: java.text.SimpleDateFormat) = {

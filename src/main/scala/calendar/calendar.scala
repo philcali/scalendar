@@ -126,8 +126,19 @@ class Scalendar(now: Long = System.currentTimeMillis) extends Ordered[Scalendar]
 
   def time = javaTime.getTimeInMillis 
 
-  def +(millis: Long) = new Scalendar(time + millis)
-  def -(millis: Long) = new Scalendar(time - millis)
+  def copy = new Scalendar(time)
+
+  def +(eval: Evaluated) = {
+    val newTime = Calendar.getInstance
+    newTime.setTimeInMillis(time)
+    newTime.add(eval.field, eval.number)
+    
+    val diff = newTime.getTimeInMillis - time
+    
+    new Scalendar(time + diff)
+  }
+
+  def -(eval: Evaluated) = this + Evaluated(eval.field, -1 * eval.number)
 
   def isIn(duration: Duration) = 
     time >= duration.start.time && time <= duration.end.time
