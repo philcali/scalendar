@@ -97,8 +97,8 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
 
   it should "test for equality" in {
     fromString("2/1/2011") should be === fromString("2/1/2011")
-    "2/5/2011" < "2/6/2011" should be === true
-    "12/5/2009" < "2/6/2011" should be === true
+    "2/5/2011".time < "2/6/2011".time should be === true
+    "12/5/2009".time < "2/6/2011".time should be === true
   }
 
   it should "perform all kinds of calendar operations" in {

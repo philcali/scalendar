@@ -62,7 +62,7 @@ field, and a `value`, which is its integer value
 Creating a meaningful duration of time very simple to create with 
 the `to` dsl word.
 
-    val duration = Scalendar.now + (Scalendar.now + (1 week))
+    val duration = Scalendar.now to (Scalendar.now + (1 week))
 
     // Determining delta 
     duration.delta.days
@@ -98,9 +98,11 @@ There are two ways to traverse a duration:
 
     println(html)
 
+View more example of how to use the software in the test source files.
+
 ## Requirements
 
-  * scala 2.8.1
-  * sbt 7.4
+  * scala 2.8.0, 2.8.1
+
 
 [my blog]: http://philcalicode.blogspot.com/
