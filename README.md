@@ -98,7 +98,7 @@ There are two ways to traverse a duration:
 
     println(html)
 
-View more example of how to use the software in the test source files.
+View more examples of how to use the library in the test source file.
 
 ## Requirements
 

@@ -132,4 +132,23 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     anotherTime.month should be === newTime.month
     anotherTime.day should be === newTime.day
   }
+
+  "Durations" should "be able to create nifty UI elements" in {
+    val html = 
+<table>{
+  test.calendarMonth.traverse(1 week) { weekD =>
+    <tr>{
+      weekD.traverse(1 day) { dayD =>
+        <td>{ dayD.day.value.toString }</td>
+      }
+    }</tr>
+  }
+}</table>
+
+    val testDays = ((html \\ "tr")(1) \ "td").map(_.text)
+
+    (html \\ "tr").size should be === 5
+    (html \\ "td").size should be === 35
+    testDays.mkString(",") should be === "6,7,8,9,10,11,12"
+  }
 }
