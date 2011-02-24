@@ -2,6 +2,7 @@ package com.philipcali.utils
 package object calendar {
 
   import java.util.Calendar
+  import conversions.FromConversion
 
   implicit def number2Conversion(num: Long) = 
     new FromConversion(num.toLong)
