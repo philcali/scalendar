@@ -1,15 +1,21 @@
 package com.philipcali.utils.calendar
 package conversions
 
-class FromConversion(number: Long) {
-  def second = number * 1000
-  def minute = second * 60
-  def hour = minute * 60
-  def day = hour * 24
-  def week = day * 7
-  def month = day * 30
-  def year = day * 365
+import java.util.Calendar._
 
+case class Evaluated(field: Int, number: Int)
+
+class FromConversion(number: Int) {
+  def millisecond = Evaluated(MILLISECOND, number)
+  def second = Evaluated(SECOND, number)
+  def minute = Evaluated(MINUTE, number)
+  def hour = Evaluated(HOUR, number)
+  def day = Evaluated(DATE, number)
+  def week = Evaluated(WEEK_OF_MONTH, number)
+  def month = Evaluated(MONTH, number)
+  def year = Evaluated(YEAR, number)
+
+  def milliseconds = millisecond
   def seconds = second
   def minutes = minute
   def hours = hour

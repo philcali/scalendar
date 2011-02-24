@@ -26,18 +26,20 @@ class Duration(from: Long, last: Long) extends RichSupport {
   def - (duration: Duration) =
     new Duration(start.time, end.time - duration.delta.milliseconds)
 
-  def traverse[A](value: Long)(fun: Duration => A) = {
-    val (max, min) = if(delta.milliseconds < 0) {
-      (0, (delta.milliseconds / value).toInt) 
-    } else {
-      ((delta.milliseconds / value).toInt, 0)
-    }
-    val mult = (num: Long) => if(num < 1) -1 * num else num
+  def traverse[A](value: Evaluated, times: Int = 0)(fun: Duration => A): List[A] = {
+    val mult = if(delta.milliseconds < 0) -1 else 1
+    val newVal = Evaluated(value.field, value.number * mult)
 
-    for(iter <- (min to max);
-        val dur = new Duration(start.time + mult(value * iter), 
-                               end.time - mult(value * (max - iter))))
-    yield(fun(dur))
+    def continueCond(cal: Scalendar) = if(mult == -1) cal >= end else cal <= end
+    def repeat(cal: Scalendar) = (0 until times).foldLeft(cal) {(a, b) => a + newVal}
+
+    val newStart = repeat(start) 
+    val newEnd = newStart + newVal - (1 second)
+
+    continueCond(newEnd) match {
+      case true => fun(newStart to newEnd) :: traverse(value, times + 1)(fun)
+      case false => Nil
+    }
   }
 
   def contains(cal: Scalendar) = cal isIn this
@@ -45,17 +47,8 @@ class Duration(from: Long, last: Long) extends RichSupport {
 
   def reverse = new Duration(end.time, start.time)
 
-  def by(value: Long): List[Duration] = {
-    traverse(value)(dur => dur).toList
-  }
-
-  def next(value: Long) = {
-    val incrementer = if(delta.milliseconds < 0) -1 else 1
-    if(value > delta.milliseconds * incrementer) {
-      new Duration(start.time + delta.milliseconds, end.time)
-    } else {
-      new Duration(start.time + value * incrementer, end.time)
-    }
+  def by(value: Evaluated): List[Duration] = {
+    traverse(value)(dur => dur)
   }
 
   override def toString = "%s - %s" format(start, end)
