@@ -1,4 +1,4 @@
-package com.github
+package com.github.philcali
 package test
 
 import calendar._
