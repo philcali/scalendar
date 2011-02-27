@@ -104,5 +104,11 @@ View more examples of how to use the library in the test source file.
 
   * scala 2.8.0, 2.8.1
 
+## Using
+
+Installing the library as a dependency is easy using maven or sbt. In sbt,
+
+    val scalendar = "com.github.philcali" %% "scalendar" % "0.1"
+
 
 [my blog]: http://philcalicode.blogspot.com/
