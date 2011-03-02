@@ -111,4 +111,33 @@ Installing the library as a dependency is easy using maven or sbt. In sbt,
     val scalendar = "com.github.philcali" %% "scalendar" % "0.1"
 
 
+## Example Program
+
+I have included a sample program, which includes parsing data from a
+log file, and checking its date.
+
+    import com.github.philcali.scalendar._
+
+    // Log time pattern
+    implicit val pattern = Pattern("M/d/yyy")
+
+    val tomorrow = Scalendar.now + 1.day
+
+    // Day duration from yesterday's run 
+    val dayIn = (Scalendar.now - 1.day) to Scalendar.now
+
+    // open csv
+    import scala.io.Source.{ fromFile => open }
+
+    // Prints out log entry 
+    for(line <- open("test.log").getLines;
+      val split = line.split(",");
+      val time = split(3);
+      if time isIn dayIn) {
+      println(line)
+    }
+
+    println("Expect the next run on %d" format(pattern.format(tomorrow)))
+
+
 [my blog]: http://philcalicode.blogspot.com/
