@@ -32,11 +32,11 @@ A single import is all that's needed.
 
 Adding to a time, could never be easier.
 
-    val tomorrow = Scalendar.now + (1 day)
+    val tomorrow = Scalendar.now + 1.day
 
-    val far = tomorrow + (3 months) - (4 weeks)
+    val far = tomorrow + 3.months - 4.weeks
 
-    val away = far + (5 years) + (14 months) - (5667 days)
+    val away = far + 5.years + 14.months - 5667.days
 
 ## Obtaining fields
 
@@ -62,7 +62,7 @@ field, and a `value`, which is its integer value
 Creating a meaningful duration of time very simple to create with 
 the `to` dsl word.
 
-    val duration = Scalendar.now to (Scalendar.now + (1 week))
+    val duration = Scalendar.now to Scalendar.now + 1.week
 
     // Determining delta 
     duration.delta.days
@@ -79,7 +79,7 @@ There are two ways to traverse a duration:
     // by will return a list of durations, which
     // can be operated on as a List
     // This only returns MWF
-    val mwf = duration.by(1 day) filter(_.day.value match {
+    val mwf = duration by 1.day filter(_.day.value match {
       case MONDAY | WEDNESDAY | FRIDAY => true
       case _ => false
     })
@@ -87,9 +87,9 @@ There are two ways to traverse a duration:
     // traverse returns by traversal
     val html = 
     <table>{
-      duration.traverse(1 week) { weekDur =>
+      duration.traverse(1.week) { weekDur =>
         <tr>{
-          weekDur.traverse(1 day) { dayDur =>
+          weekDur.traverse(1.day) { dayDur =>
             <td>{ dayDur.day.value.toString }</td>
           }
         }</tr>
