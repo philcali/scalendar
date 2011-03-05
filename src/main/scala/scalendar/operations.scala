@@ -53,10 +53,22 @@ trait MinuteFieldOperations extends CalendarOperations {
   }
 }
 
-trait HourFieldOperations extends CalendarOperations {
+trait HourlyOperations extends CalendarOperations {
+  def inDay = javaTime.get(HOUR_OF_DAY)
+  def inDay(t: Int) = set(HOUR_OF_DAY, t)
+  def isAM = isDawn || isMorning
+  def isPM = isEvening || isNight
+  def isDawn = inDay < 6
+  def isMorning = inDay >= 6 && inDay < 12
+  def isEvening = inDay >= 12 && inDay < 18
+  def isNight = inDay > 18
+}
+
+trait HourFieldOperations extends HourlyOperations { outer =>
   def hour(t: Int) = set(HOUR, t)
 
-  def hour = new CalendarField {
+  def hour = new CalendarField with HourlyOperations {
+    val javaTime = outer.javaTime
     val value = javaTime.get(HOUR)
     def name = "%d:00:00" format(value) 
   }
@@ -64,6 +76,7 @@ trait HourFieldOperations extends CalendarOperations {
 
 trait DailyOperations extends CalendarOperations {
   def inWeek = javaTime.get(DAY_OF_WEEK)
+  def inWeek(t: Int) = set(DAY_OF_WEEK, t)
   def isWeekend = inWeek == SUNDAY || inWeek == SATURDAY
   def isWeekday = !isWeekend
 }
@@ -77,6 +90,7 @@ trait DayFieldOperations extends DailyOperations { outer =>
     val javaTime = outer.javaTime
     def name = Scalendar.dayOfWeek(inWeek)
     def inYear = javaTime.get(DAY_OF_YEAR)
+    def inYear(t: Int) = set(DAY_OF_YEAR, t)
     val value = javaTime.get(DATE)
     override def toString = "%s the %d" format(name, value)
   }
@@ -90,6 +104,7 @@ trait WeekFieldOperations extends CalendarOperations {
   class WeekField extends CalendarField {
     val value = javaTime.get(WEEK_OF_MONTH)
     def inYear = javaTime.get(WEEK_OF_YEAR)
+    def inYear(t: Int) = set(WEEK_OF_YEAR, t)
     def name = value match {
       case 1 => "first"
       case 2 => "second"
