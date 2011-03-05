@@ -151,4 +151,10 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     (html \\ "td").size should be === 35
     testDays.mkString(",") should be === "6,7,8,9,10,11,12"
   }
+
+  it should "be formattable like a java date" in {
+    val time: java.util.Date = Scalendar(year = 2011, month = APRIL, day = 1)
+   
+    pattern.format(time) should be === "4/1/2011"
+  }
 }
