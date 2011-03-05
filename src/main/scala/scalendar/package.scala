@@ -13,7 +13,7 @@ package object scalendar {
       new Scalendar(time.getTime)
   }
 
-  implicit def fromDate(date: java.util.Date) = 
+  implicit def fromDate(date: Date) = 
     new Scalendar(date.getTime)
 
   implicit def fromCalendar(cal: Calendar) = 
