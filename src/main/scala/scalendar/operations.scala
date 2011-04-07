@@ -16,6 +16,7 @@ trait CalendarOperations {
     copied
   }
 
+  // Base setter... hopefully never have to use this
   def set(typ: Int, value: Int) = {
     val copied = copyTime
     copied.set(typ, value)
@@ -65,11 +66,11 @@ trait HourlyOperations extends CalendarOperations {
 }
 
 trait HourFieldOperations extends HourlyOperations { outer =>
-  def hour(t: Int) = set(HOUR, t)
+  def hour(t: Int) = set(HOUR_OF_DAY, t)
 
   def hour = new CalendarField with HourlyOperations {
     val javaTime = outer.javaTime
-    val value = javaTime.get(HOUR)
+    val value = javaTime.get(HOUR_OF_DAY)
     def name = "%d:00:00" format(value) 
   }
 }
@@ -77,6 +78,7 @@ trait HourFieldOperations extends HourlyOperations { outer =>
 trait DailyOperations extends CalendarOperations {
   def inWeek = javaTime.get(DAY_OF_WEEK)
   def inWeek(t: Int) = set(DAY_OF_WEEK, t)
+  def inWeek(t: Day.Value): Scalendar = inWeek(t.id)
   def isWeekend = inWeek == SUNDAY || inWeek == SATURDAY
   def isWeekday = !isWeekend
 }
@@ -115,11 +117,14 @@ trait WeekFieldOperations extends CalendarOperations {
   }
 }
 
+// We can safely subtract one from our month now
+// that we've broken ties with java.util.Calendar
 trait MonthFieldOperations extends CalendarOperations {
-  def month(t: Int) = set(MONTH, t)
+  def month(t: Int) = set(MONTH, t - 1)
+  def month(t: Month.Value): Scalendar = month(t.id) 
 
   def month = new CalendarField {
-    val value = javaTime.get(MONTH)
+    val value = javaTime.get(MONTH) + 1
     def name = Scalendar.monthName(value)
   }
 }
