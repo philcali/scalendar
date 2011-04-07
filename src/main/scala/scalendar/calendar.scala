@@ -6,6 +6,9 @@ import operations.RichSupport
 
 import java.util.Calendar
 import Calendar._
+import Month._
+import Day._
+
 
 object Pattern {
   def apply(pattern: String) = 
@@ -20,10 +23,10 @@ object Scalendar {
   def apply(millis: Long) = new Scalendar(millis)
  
   def apply(millisecond: Int = 0, second: Int = 0, minute: Int = 0,
-            hour: Int = 0, day: Int = 0, month: Int = -1, year: Int = 0) = {
+            hour: Int = 0, day: Int = 0, month: Int = 0, year: Int = 0) = {
     val start = new Scalendar() 
     val workingYear = if(year <= 0) start.year.value else year
-    val workingMonth = if(month <= -1) start.month.value else month
+    val workingMonth = if(month <= 0) start.month.value else month
     val workingDay = if(day <= 0) start.day.value else day
 
     start.year(workingYear)
@@ -35,34 +38,19 @@ object Scalendar {
          .millisecond(millisecond)
   }
 
-  def dayOfWeek(day: Int) = day match {
-    case SUNDAY => "Sunday"
-    case MONDAY => "Monday"
-    case TUESDAY => "Tuesday"
-    case WEDNESDAY => "Wednesday"
-    case THURSDAY => "Thusday"
-    case FRIDAY => "Friday"
-    case SATURDAY => "Saturday"
+  def dayOfWeek(day: Int) = Day.values.find(_.id == day) match {
+    case Some(d) => d.toString
+    case None => "Undefined day"
   }
   
-  def monthName(month: Int) = month match {
-    case JANUARY => "January"
-    case FEBRUARY => "February"
-    case MARCH => "March"
-    case APRIL => "April"
-    case MAY => "May"
-    case JUNE => "June"
-    case JULY => "July"
-    case AUGUST => "August"
-    case SEPTEMBER => "September"
-    case OCTOBER => "October"
-    case NOVEMBER => "November"
-    case DECEMBER => "December"
+  def monthName(month: Int) = Month.values.find(_.id == month) match {
+    case Some(mon) => mon.toString
+    case None => "Undefined month"
   }
 
-  def daynames = (SUNDAY to SATURDAY) map(day => dayOfWeek(day).substring(0, 3))
+  def daynames = Day.values map(_.toString.substring(0, 3))
 
-  def zeroOut(cal: Scalendar) = {
+  def beginDay(cal: Scalendar) = {
     cal.hour(0).minute(0).second(0).millisecond(0)
   }
 
@@ -71,11 +59,11 @@ object Scalendar {
   }
 
   def beginWeek(cal: Scalendar) = {
-    cal.set(DAY_OF_WEEK, SUNDAY)
+    beginDay(cal.inWeek(Sunday))
   }
 
   def endWeek(cal: Scalendar) = {
-    endDay(cal.set(DAY_OF_WEEK, SATURDAY))
+    endDay(cal.inWeek(Saturday))
   }
 }
 
@@ -83,7 +71,7 @@ object CalendarDayDuration {
   import Scalendar._
 
   def apply(cal: Scalendar) = {
-    zeroOut(cal) to endDay(cal)
+    beginDay(cal) to endDay(cal)
   }
 }
 
@@ -91,7 +79,7 @@ object CalendarWeekDuration {
   import Scalendar._
 
   def apply(cal: Scalendar) = {
-    beginWeek(zeroOut(cal)) to endWeek(endDay(cal))
+    beginWeek(cal) to endWeek(cal)
   }
 }
 
@@ -101,8 +89,8 @@ object CalendarMonthDuration {
   def apply(cal: Scalendar) = {
     val nextMonth = cal.day(1) + (1 month) - (1 day)
 
-    beginWeek(zeroOut(cal.day(1))) to
-    endWeek(zeroOut(nextMonth))
+    beginWeek(cal.day(1)) to
+    endWeek(nextMonth)
   }
 }
 
