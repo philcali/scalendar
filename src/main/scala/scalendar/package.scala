@@ -13,7 +13,7 @@ package object scalendar {
       new Scalendar(time.getTime)
   }
 
-  implicit def fromDate(date: java.util.Date) = 
+  implicit def fromDate(date: Date) = 
     new Scalendar(date.getTime)
 
   implicit def fromCalendar(cal: Calendar) = 
@@ -28,4 +28,34 @@ package object scalendar {
     newtime
   }
 
+  // Use these only when necessary
+  implicit def day2Int(day: Day.Value) = day.id
+  implicit def month2Int(month: Month.Value) = month.id
+
+  object Month extends Enumeration(1) {
+    type Month = Value
+    val January = Value("January")
+    val February = Value("February")
+    val March = Value("March")
+    val April = Value("April")
+    val May = Value("May")
+    val June = Value("June")
+    val July = Value("July")
+    val August = Value("August")
+    val September = Value("September") 
+    val October = Value("October")
+    val November = Value("November")
+    val December = Value("December")
+  }
+
+  object Day extends Enumeration(1) {
+    type Day = Value
+    val Sunday = Value("Sunday")
+    val Monday = Value("Monday")
+    val Tuesday= Value("Tuesday")
+    val Wednesday = Value("Wednesday")
+    val Thursday = Value("Thursday")
+    val Friday = Value("Friday")
+    val Saturday = Value("Saturday")
+  }
 }

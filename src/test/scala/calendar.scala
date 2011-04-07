@@ -13,7 +13,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   val stuck = {
     val cal = Calendar.getInstance
     // February 1, 2011
-    cal.set(2011, 1, 1)
+    cal.set(2011, FEBRUARY, 1)
     cal
   }
 
@@ -39,7 +39,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be able to handle correct arthimetic" in {
-    val test = Scalendar(year = 2011, month = FEBRUARY, day=1)
+    val test = Scalendar(year = 2011, month = 2, day=1)
 
     val april = test + (2 months)
 
@@ -122,8 +122,8 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   it should "be able to create via 'setters'" in {
     val now = Scalendar.now 
 
-    val newTime = now.year(2011).month(MARCH).day(2)
-    val anotherTime = Scalendar(year = 2011, month = MARCH, day = 2)
+    val newTime = now.year(2011).month(3).day(2)
+    val anotherTime = Scalendar(year = 2011, month = 3, day = 2)
 
     newTime.day.value should be === 2
     newTime.month.name should be === "March" 
@@ -131,6 +131,18 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     anotherTime.year should be === newTime.year
     anotherTime.month should be === newTime.month
     anotherTime.day should be === newTime.day
+  }
+
+  it should "be able specialized setters" in {
+    val time = Scalendar(year = 2011, month = 4, day = 3, hour = 13)
+    val expected1 = Scalendar(year = 2011, month = 4, day = 3)
+    val expected2 = expected1.hour(23).minute(59).second(59) 
+
+    val expected3 = expected2.day.inWeek(SATURDAY)
+
+    Scalendar.beginDay(time) should be === expected1
+    Scalendar.endDay(time) should be === expected2
+    Scalendar.endWeek(time) should be === expected3
   }
 
   "Durations" should "be able to create nifty UI elements" in {
@@ -150,5 +162,11 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     (html \\ "tr").size should be === 5
     (html \\ "td").size should be === 35
     testDays.mkString(",") should be === "6,7,8,9,10,11,12"
+  }
+
+  it should "be formattable like a java date" in {
+    val time: java.util.Date = Scalendar(year = 2011, month = 4, day = 1)
+   
+    pattern.format(time) should be === "4/1/2011"
   }
 }

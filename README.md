@@ -18,15 +18,19 @@ A single import is all that's needed.
 
     val now = Scalendar.now
 
-    // Use Calendar constants
-    import java.util.Calendar._
-    now.day(3).hour(15).month(MARCH)
+    // Normalcy
+    // 3 is March
+    // Include these enumerations is you get confused
+    // ie: What day is Sunday? 0, 1, 7? Use Day.Sunday
+    import Month._
+    import Day._
+    now.day(3).hour(15).month(3)
 
     val april = Scalendar(year = 2012,
-                          month = APRIL,
+                          month = April,
                           day = 1)
 
-    val wed = now.set(DAY_OF_WEEK, WEDNESDAY)
+    val wed = now.day.inWeek(Wednesday)
 
 ## Date Arithmetic
 
@@ -55,6 +59,8 @@ field, and a `value`, which is its integer value
     now.day.inWeek
     now.day.inYear
     now.week.value
+    now.isMorning
+    now.isAM
     // etc
 
 ## Creating Durations
@@ -108,7 +114,7 @@ View more examples of how to use the library in the test source file.
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
-    val scalendar = "com.github.philcali" %% "scalendar" % "0.1"
+    val scalendar = "com.github.philcali" %% "scalendar" % "0.2"
 
 
 ## Example Program
