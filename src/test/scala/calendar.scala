@@ -169,4 +169,20 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
    
     pattern.format(time) should be === "4/1/2011"
   }
+
+  "TimeZones" should "be settable like any other calendar field" in {
+    import java.util.TimeZone
+    
+    val indian = Scalendar.now.tz("Indian/Chagos")
+    val cst = Scalendar.now.tz("CST")
+
+    val indiantz = TimeZone.getTimeZone("Indian/Chagos")
+    val csttz = TimeZone.getTimeZone("CST")
+      
+    // Offsets from UTC
+    indian.tz.offset should be === indiantz.getRawOffset 
+    cst.tz.offset should be === csttz.getRawOffset
+
+    cst.tz.offset(indian) should be === 12 * 1000 * 60 * 60
+  }
 }
