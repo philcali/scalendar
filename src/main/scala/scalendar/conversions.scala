@@ -1,5 +1,4 @@
-package com.github.philcali.scalendar
-package conversions
+package com.github.philcali.scalendar.conversions
 
 import java.util.Calendar._
 

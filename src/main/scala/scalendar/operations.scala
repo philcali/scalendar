@@ -1,5 +1,10 @@
-package com.github.philcali.scalendar
-package operations
+package com.github.philcali.scalendar.operations
+
+import com.github.philcali.scalendar.{
+  Scalendar,
+  Day,
+  Month
+}
 
 import java.util.Calendar
 import Calendar._
