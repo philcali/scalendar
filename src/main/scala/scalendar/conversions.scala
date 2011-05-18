@@ -18,6 +18,7 @@ case class Period (fields: List[Evaluated]) {
     val future = fields.foldLeft(now)(_ + _)
     (now to future).delta.milliseconds
   }
+  def into = new ToConversion(this.milliseconds)
 }
 
 case class Evaluated(field: Int, number: Int) {
