@@ -197,6 +197,12 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     3.hours.milliseconds should be === (3 * 60 * 60 * 1000)
   }
 
+  it should "be able to transform it's output" in {
+    3.hours.into.minutes should be === 180 
+    4.days.into.hours should be === (4 * 24) 
+    1.minute.into.milliseconds should be === 1.minute.milliseconds
+  }
+
   it should "be able to add to times" in {
     val twoweeks = 1.week + 7.days
     val april = Scalendar(2011, 4, 1)
