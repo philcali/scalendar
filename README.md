@@ -12,9 +12,10 @@ Scalendar is a pure Scala date api that interoperates quite nicely with
 
 ## Construction
 
-A single import is all that's needed.
+    import com.github.philcali.scalendar._
+    // All the conversion for adding time.
+    import implicits._  
 
-    import com.github.philcali.scalendar.Scalendar
 
     val now = Scalendar.now
 
@@ -63,6 +64,21 @@ field, and a `value`, which is its integer value
     now.isAM
     // etc
 
+## TimeZone Support
+
+Given a `Scalendar` object, one can easily finding the TimeZone associated
+with it. All TimeZone related operations are acquired from the `tz` field.
+
+    val tz = now.tz
+   
+    val pst = now.tz("PST")
+
+    // Find the offset (in millis) from UTC
+    tz.offset
+
+    // Find the offset (in millis) from another TZ
+    tz.offset(pst)    
+
 ## Creating Durations
 
 Creating a meaningful duration of time very simple to create with 
@@ -108,14 +124,17 @@ View more examples of how to use the library in the test source file.
 
 ## Requirements
 
-  * scala 2.8.0, 2.8.1
+  * scala (Cross compiled / published)
+    * 2.9.0 
+    * 2.8.1 
+    * 2.8.0
+    * 2.7.7
 
 ## Using
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
-    val scalendar = "com.github.philcali" %% "scalendar" % "0.2"
-
+    val scalendar = "com.github.philcali" %% "scalendar" % "0.0.3"
 
 ## Example Program
 
@@ -123,6 +142,7 @@ I have included a sample program, which includes parsing data from a
 log file, and checking its date.
 
     import com.github.philcali.scalendar._
+    import implicits._
 
     // Log time pattern
     implicit val pattern = Pattern("M/d/yyy")

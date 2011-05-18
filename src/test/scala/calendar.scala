@@ -1,7 +1,7 @@
-package com.github.philcali
-package test
+package com.github.philcali.test
 
-import scalendar._
+import com.github.philcali.scalendar._
+import implicits._
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
@@ -39,7 +39,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be able to handle correct arthimetic" in {
-    val test = Scalendar(year = 2011, month = 2, day=1)
+    val test = Scalendar(2011, 2, 1)
 
     val april = test + (2 months)
 
@@ -123,7 +123,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     val now = Scalendar.now 
 
     val newTime = now.year(2011).month(3).day(2)
-    val anotherTime = Scalendar(year = 2011, month = 3, day = 2)
+    val anotherTime = Scalendar(2011, 3, 2)
 
     newTime.day.value should be === 2
     newTime.month.name should be === "March" 
@@ -134,8 +134,8 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be able specialized setters" in {
-    val time = Scalendar(year = 2011, month = 4, day = 3, hour = 13)
-    val expected1 = Scalendar(year = 2011, month = 4, day = 3)
+    val time = Scalendar(2011, 4, 3).hour(13)
+    val expected1 = Scalendar(2011, 4, 3)
     val expected2 = expected1.hour(23).minute(59).second(59) 
 
     val expected3 = expected2.day.inWeek(SATURDAY)
@@ -165,8 +165,24 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be formattable like a java date" in {
-    val time: java.util.Date = Scalendar(year = 2011, month = 4, day = 1)
+    val time: java.util.Date = Scalendar(2011, 4, 1)
    
     pattern.format(time) should be === "4/1/2011"
+  }
+
+  "TimeZones" should "be settable like any other calendar field" in {
+    import java.util.TimeZone
+    
+    val indian = Scalendar.now.tz("Indian/Chagos")
+    val cst = Scalendar.now.tz("CST")
+
+    val indiantz = TimeZone.getTimeZone("Indian/Chagos")
+    val csttz = TimeZone.getTimeZone("CST")
+      
+    // Offsets from UTC
+    indian.tz.offset should be === indiantz.getRawOffset 
+    cst.tz.offset should be === csttz.getRawOffset
+
+    cst.tz.offset(indian) should be === 12 * 1000 * 60 * 60
   }
 }
