@@ -79,6 +79,22 @@ with it. All TimeZone related operations are acquired from the `tz` field.
     // Find the offset (in millis) from another TZ
     tz.offset(pst)    
 
+## Time Converions / Periods
+
+The Scalendar library now supports periods of time, and easy time conversions.
+The programmer should never have to write silly mathematical conversions.
+
+    val period = 4.weeks + 30.hours - 8.minutes
+
+    println(period.into.seconds) // Going to be big!
+    println(period.into.days) // A lot smaller
+   
+    println("Whoa, that timespan you mentioned is actually %d hours" format(period.into.hours))
+ 
+    val future = Scalendar.now + period
+
+You get the idea.
+
 ## Creating Durations
 
 Creating a meaningful duration of time very simple to create with 
@@ -102,7 +118,7 @@ There are two ways to traverse a duration:
     // can be operated on as a List
     // This only returns MWF
     val mwf = duration by 1.day filter(_.day.value match {
-      case MONDAY | WEDNESDAY | FRIDAY => true
+      case Monday | Wednesday | Friday => true
       case _ => false
     })
 
