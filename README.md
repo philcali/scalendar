@@ -114,6 +114,8 @@ There are two ways to traverse a duration:
   1. The `traverse` method
   2. The `by` dsl word
 
+  The follow codez, will illustrate their use.
+
     // by will return a list of durations, which
     // can be operated on as a List
     // This only returns MWF
