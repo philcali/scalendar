@@ -1,14 +1,37 @@
-package com.github.philcali
-package scalendar 
+package com.github.philcali.scalendar
 
+import implicits._
 import conversions._
 import operations.RichSupport
 
 import java.util.Calendar
-import Calendar._
-import Month._
-import Day._
 
+object Month extends Enumeration(1) {
+  type Month = Value
+  val January = Value("January")
+  val February = Value("February")
+  val March = Value("March")
+  val April = Value("April")
+  val May = Value("May")
+  val June = Value("June")
+  val July = Value("July")
+  val August = Value("August")
+  val September = Value("September") 
+  val October = Value("October")
+  val November = Value("November")
+  val December = Value("December")
+}
+
+object Day extends Enumeration(1) {
+  type Day = Value
+  val Sunday = Value("Sunday")
+  val Monday = Value("Monday")
+  val Tuesday= Value("Tuesday")
+  val Wednesday = Value("Wednesday")
+  val Thursday = Value("Thursday")
+  val Friday = Value("Friday")
+  val Saturday = Value("Saturday")
+}
 
 object Pattern {
   def apply(pattern: String) = 
@@ -21,34 +44,25 @@ object Scalendar {
   def now = new Scalendar() 
 
   def apply(millis: Long) = new Scalendar(millis)
+
+  def apply(year: Int, month: Int, day: Int) = 
+    beginDay(now).year(year).month(month).day(day)
+
+  def apply(year: Int, month: Int, day: Int, hour: Int,
+            minute: Int, second: Int, millisecond: Int) = 
+    now.year(year)
+       .month(month)
+       .day(day)
+       .hour(hour)
+       .minute(minute)
+       .second(second)
+       .millisecond(millisecond)
  
-  def apply(millisecond: Int = 0, second: Int = 0, minute: Int = 0,
-            hour: Int = 0, day: Int = 0, month: Int = 0, year: Int = 0) = {
-    val start = new Scalendar() 
-    val workingYear = if(year <= 0) start.year.value else year
-    val workingMonth = if(month <= 0) start.month.value else month
-    val workingDay = if(day <= 0) start.day.value else day
-
-    start.year(workingYear)
-         .month(workingMonth)
-         .day(workingDay)
-         .hour(hour)
-         .minute(minute)
-         .second(second)
-         .millisecond(millisecond)
-  }
-
-  def dayOfWeek(day: Int) = Day.values.find(_.id == day) match {
-    case Some(d) => d.toString
-    case None => "Undefined day"
-  }
+  def dayOfWeek(day: Int) = Day(day).toString
   
-  def monthName(month: Int) = Month.values.find(_.id == month) match {
-    case Some(mon) => mon.toString
-    case None => "Undefined month"
-  }
+  def monthName(month: Int) = Month(month).toString
 
-  def daynames = Day.values map(_.toString.substring(0, 3))
+  def daynames = (1 to 7).map (Day(_).toString.substring(0,3))
 
   def beginDay(cal: Scalendar) = {
     cal.hour(0).minute(0).second(0).millisecond(0)
@@ -59,11 +73,11 @@ object Scalendar {
   }
 
   def beginWeek(cal: Scalendar) = {
-    beginDay(cal.inWeek(Sunday))
+    beginDay(cal.inWeek(Day.Sunday))
   }
 
   def endWeek(cal: Scalendar) = {
-    endDay(cal.inWeek(Saturday))
+    endDay(cal.inWeek(Day.Saturday))
   }
 }
 
@@ -87,16 +101,18 @@ object CalendarMonthDuration {
   import Scalendar._
 
   def apply(cal: Scalendar) = {
-    val nextMonth = cal.day(1) + (1 month) - (1 day)
+    val nextMonth = cal.day(1) + 1.month - 1.day
 
     beginWeek(cal.day(1)) to
     endWeek(nextMonth)
   }
 }
 
-class Scalendar(now: Long = System.currentTimeMillis) extends Ordered[Scalendar] 
-                                                             with RichSupport {  
+class Scalendar(now: Long) extends Ordered[Scalendar] 
+                              with RichSupport {  
   import Scalendar._
+
+  def this() = this(System.currentTimeMillis)
 
   protected val javaTime = {
     val calendar = Calendar.getInstance()
@@ -116,6 +132,9 @@ class Scalendar(now: Long = System.currentTimeMillis) extends Ordered[Scalendar]
 
   def copy = new Scalendar(time)
 
+  def + (period: Period): Scalendar = period.fields.foldLeft (this) (_ + _)
+  def - (period: Period): Scalendar = period.fields.foldLeft (this) (_ - _)
+
   def +(eval: Evaluated) = {
     val newTime = Calendar.getInstance
     newTime.setTimeInMillis(time)
@@ -126,7 +145,7 @@ class Scalendar(now: Long = System.currentTimeMillis) extends Ordered[Scalendar]
     new Scalendar(time + diff)
   }
 
-  def -(eval: Evaluated) = this + Evaluated(eval.field, -1 * eval.number)
+  def -(eval: Evaluated) = this + eval.negate 
 
   def isIn(duration: Duration) = 
     time >= duration.start.time && time <= duration.end.time

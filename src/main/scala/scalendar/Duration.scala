@@ -1,6 +1,6 @@
-package com.github.philcali
-package scalendar
+package com.github.philcali.scalendar
 
+import implicits._
 import conversions._
 import operations.RichSupport
 
@@ -26,20 +26,27 @@ class Duration(from: Long, last: Long) extends RichSupport {
   def - (duration: Duration) =
     new Duration(start.time, end.time - duration.delta.milliseconds)
 
-  def traverse[A](value: Evaluated, times: Int = 0)(fun: Duration => A): List[A] = {
+  def traverse[A](value: Evaluated)(fun: Duration => A): List[A] = {
     val mult = if(delta.milliseconds < 0) -1 else 1
     val newVal = Evaluated(value.field, value.number * mult)
 
     def continueCond(cal: Scalendar) = if(mult == -1) cal >= end else cal <= end
-    def repeat(cal: Scalendar) = (0 until times).foldLeft(cal) {(a, b) => a + newVal}
 
-    val newStart = repeat(start) 
-    val newEnd = newStart + newVal - (1 second)
+    def traverseTimes(times: Int): List[A] = {
+      def repeat(cal: Scalendar) = (0 until times).foldLeft(cal) {(a, b) => 
+        a + newVal
+      }
 
-    continueCond(newEnd) match {
-      case true => fun(newStart to newEnd) :: traverse(value, times + 1)(fun)
-      case false => Nil
+      val newStart = repeat(start) 
+      val newEnd = newStart + newVal - (1 second)
+
+      continueCond(newEnd) match {
+        case true => fun(newStart to newEnd) :: traverseTimes(times + 1)
+        case false => Nil
+      }
     }
+    
+    traverseTimes(0)
   }
 
   def contains(cal: Scalendar) = cal isIn this

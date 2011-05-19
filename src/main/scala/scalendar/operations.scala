@@ -1,7 +1,12 @@
-package com.github.philcali.scalendar
-package operations
+package com.github.philcali.scalendar.operations
 
-import java.util.Calendar
+import com.github.philcali.scalendar.{
+  Scalendar,
+  Day,
+  Month
+}
+
+import java.util.{TimeZone, Calendar}
 import Calendar._
 
 trait CalendarOperations {
@@ -34,6 +39,53 @@ abstract class CalendarField {
     case _ => false
   }
   override def toString = name
+}
+
+trait TimeZoneOperations extends CalendarOperations {
+  // Mess with the system time zone, and return something
+  // I'm not a big fan of this, but it works for now.
+  private def withZoned[A](t: TimeZone)(body: TimeZone => A): A = {
+    val current = TimeZone.getDefault
+    TimeZone.setDefault(t)
+    val rtn = body(current)
+    TimeZone.setDefault(current)
+    rtn
+  }
+
+  def tz(t: TimeZone): Scalendar = withZoned(t) { old =>
+    val copied = copyTime
+    val newTime = t.getOffset(copied.getTimeInMillis)
+    val oldTime = old.getOffset(copied.getTimeInMillis)
+
+    new Scalendar(copied.getTimeInMillis - (oldTime - newTime))
+  }
+
+  def tz(id: String): Scalendar = tz(TimeZone.getTimeZone(id))
+
+  def tz = new TimeZoneField 
+
+  class TimeZoneField extends CalendarField {
+    private val internal = javaTime.getTimeZone
+
+    val value = javaTime.get(ZONE_OFFSET)
+    def name = internal.getDisplayName
+    def id = internal.getID
+
+    // UTC offset
+    def offset: Int = internal.getRawOffset
+
+    // Kept for compatibility
+    def offset(other: Long) = internal.getOffset(other)
+
+    // Find millisecond difference between to the two times
+    def offset(other: Scalendar) = - (value - other.tz.value)
+
+    // Offsets this time to that time
+    def offsetTime(other: Scalendar) = 
+      new Scalendar(copyTime.getTimeInMillis + offset(other))
+
+    def inDaylightTime = internal.inDaylightTime(javaTime.getTime)
+  }
 }
 
 trait SecondFieldOperations extends CalendarOperations {
@@ -145,3 +197,4 @@ trait RichSupport extends YearFieldOperations
                      with HourFieldOperations
                      with MinuteFieldOperations
                      with SecondFieldOperations
+                     with TimeZoneOperations
