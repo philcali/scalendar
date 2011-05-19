@@ -2,7 +2,28 @@ package com.github.philcali.scalendar.conversions
 
 import java.util.Calendar._
 
-case class Evaluated(field: Int, number: Int)
+import com.github.philcali.scalendar.{
+  Scalendar,
+  implicits
+}
+import implicits._
+
+case class Period (fields: List[Evaluated]) {
+  def + (other: Evaluated) = 
+    Period(other :: fields)
+  def - (other: Evaluated) = 
+    Period(other.negate :: fields)
+  def milliseconds = {
+    val now = Scalendar.now
+    val future = fields.foldLeft(now)(_ + _)
+    (now to future).delta.milliseconds
+  }
+  def into = new ToConversion(this.milliseconds)
+}
+
+case class Evaluated(field: Int, number: Int) {
+  def negate = Evaluated(field, -number)
+}
 
 class FromConversion(number: Int) {
   def millisecond = Evaluated(MILLISECOND, number)

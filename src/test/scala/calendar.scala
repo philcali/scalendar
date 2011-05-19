@@ -185,4 +185,29 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
 
     cst.tz.offset(indian) should be === 12 * 1000 * 60 * 60
   }
+
+  "Periods" should "be created from adding fields together" in {
+    val period = 4.days + 3.hours - 2.minutes
+    
+    val expected = (4 * 24 * 60 * 60 * 1000) + 
+                   (3 * 60 * 60 * 1000) - 
+                   (2 * 60 * 1000)
+
+    period.milliseconds should be === expected
+    3.hours.milliseconds should be === (3 * 60 * 60 * 1000)
+  }
+
+  it should "be able to transform it's output" in {
+    3.hours.into.minutes should be === 180 
+    4.days.into.hours should be === (4 * 24) 
+    1.minute.into.milliseconds should be === 1.minute.milliseconds
+  }
+
+  it should "be able to add to times" in {
+    val twoweeks = 1.week + 7.days
+    val april = Scalendar(2011, 4, 1)
+    val expected = april + 2.weeks
+
+    (april + twoweeks) should be === expected
+  }
 }

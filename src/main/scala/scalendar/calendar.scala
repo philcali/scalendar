@@ -132,6 +132,9 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
 
   def copy = new Scalendar(time)
 
+  def + (period: Period): Scalendar = period.fields.foldLeft (this) (_ + _)
+  def - (period: Period): Scalendar = period.fields.foldLeft (this) (_ - _)
+
   def +(eval: Evaluated) = {
     val newTime = Calendar.getInstance
     newTime.setTimeInMillis(time)
@@ -142,7 +145,7 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
     new Scalendar(time + diff)
   }
 
-  def -(eval: Evaluated) = this + Evaluated(eval.field, -1 * eval.number)
+  def -(eval: Evaluated) = this + eval.negate 
 
   def isIn(duration: Duration) = 
     time >= duration.start.time && time <= duration.end.time

@@ -3,7 +3,7 @@ package com.github.philcali.scalendar
 object implicits {
 
   import java.util.{Date, Calendar}
-  import conversions.FromConversion
+  import conversions._
 
   implicit def number2Conversion(num: Int) = 
     new FromConversion(num)
@@ -27,6 +27,10 @@ object implicits {
     val newtime = Calendar.getInstance
     newtime.setTimeInMillis(cal.time)
     newtime
+  }
+
+  implicit def evalToPeriod(evaluated: Evaluated) = {
+    Period(evaluated :: Nil)
   }
 
   // Use these only when necessary
