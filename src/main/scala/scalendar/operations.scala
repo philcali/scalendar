@@ -160,6 +160,7 @@ trait WeekFieldOperations extends CalendarOperations {
       case 3 => "third"
       case 4 => "forth"
       case 5 => "fifth"
+      case 6 => "sixth"
     }
   }
 }

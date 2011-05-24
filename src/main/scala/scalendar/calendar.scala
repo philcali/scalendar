@@ -161,5 +161,6 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
 
   def calendarDay = CalendarDayDuration(this) 
 
+  def date = new java.util.Date(time)
   override def toString = Pattern("MM/dd/yyyy HH:mm:ss").format(javaTime.getTime)
 }
