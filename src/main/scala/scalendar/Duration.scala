@@ -1,6 +1,5 @@
 package com.github.philcali.scalendar
 
-import implicits._
 import conversions._
 import operations.RichSupport
 

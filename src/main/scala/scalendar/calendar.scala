@@ -1,6 +1,5 @@
 package com.github.philcali.scalendar
 
-import implicits._
 import conversions._
 import operations.RichSupport
 
@@ -49,7 +48,7 @@ object Scalendar {
     beginDay(now).year(year).month(month).day(day)
 
   def apply(year: Int, month: Int, day: Int, hour: Int,
-            minute: Int, second: Int, millisecond: Int) = 
+            minute: Int, second: Int, millisecond: Int = 0) = 
     now.year(year)
        .month(month)
        .day(day)

@@ -1,12 +1,7 @@
-package com.github.philcali.scalendar.conversions
+package com.github.philcali.scalendar
+package conversions
 
 import java.util.Calendar._
-
-import com.github.philcali.scalendar.{
-  Scalendar,
-  implicits
-}
-import implicits._
 
 case class Period (fields: List[Evaluated]) {
   def + (other: Evaluated) = 
@@ -55,5 +50,3 @@ class ToConversion(number: Long) {
   def months  = days / 30
   def years = days / 365
 }
-
-
