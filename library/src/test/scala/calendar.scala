@@ -9,7 +9,8 @@ import org.scalatest.matchers.ShouldMatchers
 import java.util.Calendar
 import java.util.Calendar._
 
-class CalendarSpec extends FlatSpec with ShouldMatchers {
+// Test our Implicits too
+class CalendarSpec extends FlatSpec with ShouldMatchers with CalendarImplicits {
   val stuck = {
     val cal = Calendar.getInstance
     // February 1, 2011
@@ -26,14 +27,14 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   } 
 
   it should "produce a duration from dsl" in {
-    val duration = Scalendar(2011, 2, 1) to Scalendar(2011, 2, 5) 
+    val duration = "2/1/2011" to Scalendar(2011, 2, 5) 
 
     duration.delta.days should be === 4
     duration.delta.hours should be === (4 * 24)
   }
 
   it should "be able to handle date arithmetic" in {
-    val dayLater = test + Days(1) 
+    val dayLater = test + 1.day 
     
     dayLater.day.value should be === 2
   }
@@ -41,9 +42,9 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   it should "be able to handle correct arthimetic" in {
     val test = Scalendar(2011, 2, 1)
 
-    val april = test + Months(2) 
+    val april = test + 2.months 
 
-    val yearfrom = test + Months(12) 
+    val yearfrom = test + 12.months 
 
     (test + Months(1)).day.value should be === 1
     (test + Weeks(1)).day.value should be === 8
@@ -56,7 +57,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be able to form a duration" in {
-    val newDuration = test to Scalendar(2011, 3, 19) to Scalendar(2011, 4, 21)
+    val newDuration = test to "3/19/2011" to "4/12/2011" 
 
     newDuration.end.month.name should be === "April"
   }
@@ -182,7 +183,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   "Periods" should "be created from adding fields together" in {
-    val period = Days(4) + Hours(3) - Minutes(2)
+    val period = 4.days + 3.hours - 2.minutes 
     
     val expected = (4 * 24 * 60 * 60 * 1000) + 
                    (3 * 60 * 60 * 1000) - 
