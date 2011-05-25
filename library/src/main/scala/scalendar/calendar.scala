@@ -3,7 +3,7 @@ package com.github.philcali.scalendar
 import conversions._
 import operations.RichSupport
 
-import java.util.Calendar
+import java.util.{Date, Calendar}
 
 object Month extends Enumeration(1) {
   type Month = Value
@@ -48,7 +48,7 @@ object Scalendar {
     beginDay(now).year(year).month(month).day(day)
 
   def apply(year: Int, month: Int, day: Int, hour: Int,
-            minute: Int, second: Int, millisecond: Int = 0) = 
+            minute: Int, second: Int, millisecond: Int) = 
     now.year(year)
        .month(month)
        .day(day)
@@ -100,7 +100,7 @@ object CalendarMonthDuration {
   import Scalendar._
 
   def apply(cal: Scalendar) = {
-    val nextMonth = cal.day(1) + 1.month - 1.day
+    val nextMonth = cal.day(1) + Months(1) - Days(1)
 
     beginWeek(cal.day(1)) to
     endWeek(nextMonth)
@@ -161,6 +161,8 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
 
   def calendarDay = CalendarDayDuration(this) 
 
+  // Explicit conversions to java time
   def date = new java.util.Date(time)
+  def cal = copyTime
   override def toString = Pattern("MM/dd/yyyy HH:mm:ss").format(javaTime.getTime)
 }

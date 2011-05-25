@@ -1,6 +1,7 @@
-package com.github.philcali.test
+package com.github.philcali.scalendar.test
 
 import com.github.philcali.scalendar._
+import conversions._
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
@@ -25,14 +26,14 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   } 
 
   it should "produce a duration from dsl" in {
-    val duration = "02/01/2011" to "02/05/2011"
+    val duration = Scalendar(2011, 2, 1) to Scalendar(2011, 2, 5) 
 
     duration.delta.days should be === 4
     duration.delta.hours should be === (4 * 24)
   }
 
   it should "be able to handle date arithmetic" in {
-    val dayLater = test + (1 day)
+    val dayLater = test + Days(1) 
     
     dayLater.day.value should be === 2
   }
@@ -40,14 +41,14 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   it should "be able to handle correct arthimetic" in {
     val test = Scalendar(2011, 2, 1)
 
-    val april = test + (2 months)
+    val april = test + Months(2) 
 
-    val yearfrom = test + (12 months)
+    val yearfrom = test + Months(12) 
 
-    (test + (1 month)).day.value should be === 1
-    (test + (1 week)).day.value should be === 8
-    (test + (1 week)).day.name should be === test.day.name
-    (test + (3 days)).day.value should be === 4
+    (test + Months(1)).day.value should be === 1
+    (test + Weeks(1)).day.value should be === 8
+    (test + Weeks(1)).day.name should be === test.day.name
+    (test + Days(3)).day.value should be === 4
     april.day.value should be === 1
     april.month.name should be === "April"
     yearfrom.month.name should be === test.month.name
@@ -55,33 +56,33 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be able to form a duration" in {
-    val newDuration = test to "03/19/2011" to "04/21/2011" 
+    val newDuration = test to Scalendar(2011, 3, 19) to Scalendar(2011, 4, 21)
 
     newDuration.end.month.name should be === "April"
   }
 
   it should "be a traversable duration" in {
-    val duration = "02/01/2011" to ("03/01/2011" - (1 millisecond))
+    val duration = Scalendar(2011, 2, 1) to (Scalendar(2011, 3, 1) - Milliseconds(1))
   
     duration.start.day.value should be === 1
     duration.end.day.value should be === 28
  
-    duration.traverse(1 week) { weekDuration =>
-      weekDuration.traverse(1 day) { dayDuration =>
+    duration.traverse(Weeks(1)) { weekDuration =>
+      weekDuration.traverse(Days(1)) { dayDuration =>
         dayDuration.delta.hours should be === 23 
       }
     }
   }
 
   it should "produce a calendar month fairly easily" in {
-    val month = "2/14/2011".calendarMonth
+    val month = Scalendar(2011, 2, 14).calendarMonth
  
-    month.by(1 week).foldLeft(0) {(a, b) => a + 1 } should be === 5
+    month.by(Weeks(1)).foldLeft(0) {(a, b) => a + 1 } should be === 5
   }
 
   it should "filter time just as easy as a list" in {
     // Pure Scala
-    "2/1/2011".calendarMonth.by(1 day) filter(_.day.name match {
+    Scalendar(2011, 2, 1).calendarMonth.by(Days(1)) filter(_.day.name match {
       case "Monday" | "Wednesday" | "Friday" => true
       case _ => false
     }) foreach { mwf =>
@@ -90,18 +91,19 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be able contained within a duration" in {
-    "2/6/2011" isIn ("2/1/2011" to "2/15/2011") should be === true
-    "3/1/2011" isIn ("2/1/2011" to "2/15/2011") should be === false
+    val twoweeks = Scalendar(2011, 2, 1) to Scalendar(2011, 2, 15)
+    Scalendar(2011, 2, 6) isIn twoweeks should be === true
+    Scalendar(2011, 3, 1) isIn twoweeks should be === false
   }
 
   it should "test for equality" in {
-    fromString("2/1/2011") should be === fromString("2/1/2011")
-    "2/5/2011".time < "2/6/2011".time should be === true
-    "12/5/2009".time < "2/6/2011".time should be === true
+    Scalendar(2011, 2, 1) should be === Scalendar(2011, 2, 1) 
+    Scalendar(2011, 2, 5) < Scalendar(2011, 2, 6) should be === true
+    Scalendar(1999, 12, 16) < Scalendar(2011, 3, 10) should be === true
   }
 
   it should "perform all kinds of calendar operations" in {
-    val stuck = fromString("2/7/2011")
+    val stuck = Scalendar(2011, 2, 7) 
 
     stuck.day.value should be === 7
     stuck.day.name should be === "Monday"
@@ -110,11 +112,11 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be reversable" in {
-    val negspan = "2/28/2011" to "1/31/2011"
+    val negspan = Scalendar(2011, 2, 28) to Scalendar(2011, 1, 31) 
     
     negspan.delta.days should be === -28
 
-    val countdown = negspan.by(1 day).map(_.day.value)
+    val countdown = negspan.by(Days(1)).map(_.day.value)
     countdown.take(5).mkString(",") should be === "28,27,26,25,24"
   }
 
@@ -147,9 +149,9 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   "Durations" should "be able to create nifty UI elements" in {
     val html = 
 <table>{
-  test.calendarMonth.traverse(1 week) { weekD =>
+  test.calendarMonth.traverse(Weeks(1)) { weekD =>
     <tr>{
-      weekD.traverse(1 day) { dayD =>
+      weekD.traverse(Days(1)) { dayD =>
         <td>{ dayD.day.value.toString }</td>
       }
     }</tr>
@@ -161,12 +163,6 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     (html \\ "tr").size should be === 5
     (html \\ "td").size should be === 35
     testDays.mkString(",") should be === "6,7,8,9,10,11,12"
-  }
-
-  it should "be formattable like a java date" in {
-    val time: java.util.Date = Scalendar(2011, 4, 1)
-   
-    pattern.format(time) should be === "4/1/2011"
   }
 
   "TimeZones" should "be settable like any other calendar field" in {
@@ -186,26 +182,25 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
   }
 
   "Periods" should "be created from adding fields together" in {
-    val period = 4.days + 3.hours - 2.minutes
+    val period = Days(4) + Hours(3) - Minutes(2)
     
     val expected = (4 * 24 * 60 * 60 * 1000) + 
                    (3 * 60 * 60 * 1000) - 
                    (2 * 60 * 1000)
 
     period.milliseconds should be === expected
-    3.hours.milliseconds should be === (3 * 60 * 60 * 1000)
+    Hours(3).milliseconds should be === (3 * 60 * 60 * 1000)
   }
 
   it should "be able to transform it's output" in {
-    3.hours.into.minutes should be === 180 
-    4.days.into.hours should be === (4 * 24) 
-    1.minute.into.milliseconds should be === 1.minute.milliseconds
+    Hours(3).into.minutes should be === 180 
+    Days(4).into.hours should be === (4 * 24) 
   }
 
   it should "be able to add to times" in {
-    val twoweeks = 1.week + 7.days
+    val twoweeks = Weeks(1) + Days(7) 
     val april = Scalendar(2011, 4, 1)
-    val expected = april + 2.weeks
+    val expected = april + Weeks(2) 
 
     (april + twoweeks) should be === expected
   }

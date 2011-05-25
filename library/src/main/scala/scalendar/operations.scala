@@ -1,6 +1,6 @@
-package com.github.philcali.scalendar
-package operations
+package com.github.philcali.scalendar.operations
 
+import com.github.philcali.scalendar._
 import java.util.{TimeZone, Calendar}
 import Calendar._
 
@@ -10,7 +10,7 @@ trait CalendarOperations {
   def millisecond(t: Int) = set(MILLISECOND, t)
   def millisecond = javaTime.get(MILLISECOND)
 
-  def copyTime = {
+  protected def copyTime = {
     val copied = Calendar.getInstance
     copied.setTimeInMillis(javaTime.getTimeInMillis)
     copied
