@@ -1,32 +1,25 @@
 package com.github.philcali
 
 // The preferred way to import implicits.
+// In Scala 2.8 +
 package object scalendar {
-
-  import java.util.{Date, Calendar}
-  import conversions._
-
-  // Conveniences
   implicit def number2Conversion(num: Int) = 
-    new FromConversion(num)
-
+    Imports.number2Conversion(num)
   implicit def fromString(dateString: String)
-                         (implicit pattern: java.text.SimpleDateFormat) = {
-      val time = pattern.parse(dateString)
-      new Scalendar(time.getTime)
-  }
+                         (implicit pattern: java.text.SimpleDateFormat) = 
+    Imports.fromString(dateString)(pattern)
 
-  // From Java Things
-  implicit def fromDate(date: Date) = 
-    new Scalendar(date.getTime)
-  implicit def fromCalendar(cal: Calendar) = 
-    new Scalendar(cal.getTimeInMillis)
+  implicit def fromDate(date: java.util.Date) =
+    Imports.fromDate(date)
 
-  // To Java things
-  implicit def toDate(cal: Scalendar): Date = cal.date 
-  implicit def toCalendar(cal: Scalendar): Calendar = cal.cal
+  implicit def fromCalendar(cal: java.util.Calendar) =
+    Imports.fromCalendar(cal)
 
-  // Use these only when necessary
-  implicit def day2Int(day: Day.Value) = day.id
-  implicit def month2Int(month: Month.Value) = month.id
+  implicit def toDate(cal: Scalendar) =
+    Imports.toDate(cal) 
+  implicit def toCalendar(cal: Scalendar) = 
+    Imports.toCalendar(cal)
+
+  implicit def day2Int(day: Day.Value) = Imports.day2Int(day)
+  implicit def month2Int(day: Month.Value) = Imports.month2Int(day)
 }
