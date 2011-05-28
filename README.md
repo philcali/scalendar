@@ -150,7 +150,7 @@ View more examples of how to use the library in the test source file.
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
-    val scalendar = "com.github.philcali" %% "scalendar" % "0.0.3"
+    val scalendar = "com.github.philcali" %% "scalendar" % "0.0.4"
 
 ## Example Program
 
