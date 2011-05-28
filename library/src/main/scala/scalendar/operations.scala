@@ -1,11 +1,6 @@
 package com.github.philcali.scalendar.operations
 
-import com.github.philcali.scalendar.{
-  Scalendar,
-  Day,
-  Month
-}
-
+import com.github.philcali.scalendar._
 import java.util.{TimeZone, Calendar}
 import Calendar._
 
@@ -15,7 +10,7 @@ trait CalendarOperations {
   def millisecond(t: Int) = set(MILLISECOND, t)
   def millisecond = javaTime.get(MILLISECOND)
 
-  def copyTime = {
+  protected def copyTime = {
     val copied = Calendar.getInstance
     copied.setTimeInMillis(javaTime.getTimeInMillis)
     copied
@@ -165,6 +160,7 @@ trait WeekFieldOperations extends CalendarOperations {
       case 3 => "third"
       case 4 => "forth"
       case 5 => "fifth"
+      case 6 => "sixth"
     }
   }
 }

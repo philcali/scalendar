@@ -1,14 +1,11 @@
 package com.github.philcali.scalendar.conversions
 
 import java.util.Calendar._
+import com.github.philcali.scalendar.Scalendar
 
-import com.github.philcali.scalendar.{
-  Scalendar,
-  implicits
-}
-import implicits._
+sealed trait PeriodBuilder {
+  val fields: List[Evaluated]
 
-case class Period (fields: List[Evaluated]) {
   def + (other: Evaluated) = 
     Period(other :: fields)
   def - (other: Evaluated) = 
@@ -21,8 +18,45 @@ case class Period (fields: List[Evaluated]) {
   def into = new ToConversion(this.milliseconds)
 }
 
-case class Evaluated(field: Int, number: Int) {
+case class Period (fields: List[Evaluated]) extends PeriodBuilder
+
+case class Evaluated(field: Int, number: Int) extends PeriodBuilder {
+  val fields = List(this)
   def negate = Evaluated(field, -number)
+}
+
+sealed trait EvaluatedField {
+  val field: Int
+  def apply(number: Int) = Evaluated(field, number)
+  def unapply(evald: Evaluated) = evald match {
+    case Evaluated(f, n) if f == field => Some(n)
+    case _ => None
+  }
+}
+
+object Milliseconds extends EvaluatedField {
+  val field = MILLISECOND
+}
+object Seconds extends EvaluatedField {
+  val field = SECOND
+}
+object Minutes extends EvaluatedField {
+  val field = MINUTE
+}
+object Hours extends EvaluatedField {
+  val field = HOUR
+}
+object Days extends EvaluatedField {
+  val field = DATE
+}
+object Weeks extends EvaluatedField {
+  val field = WEEK_OF_MONTH
+}
+object Months extends EvaluatedField {
+  val field = MONTH
+}
+object Years extends EvaluatedField {
+  val field = YEAR
 }
 
 class FromConversion(number: Int) {
@@ -55,5 +89,3 @@ class ToConversion(number: Long) {
   def months  = days / 30
   def years = days / 365
 }
-
-

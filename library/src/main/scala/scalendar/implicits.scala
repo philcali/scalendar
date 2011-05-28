@@ -1,10 +1,10 @@
 package com.github.philcali.scalendar
 
-object implicits {
-
+trait CalendarImplicits {
   import java.util.{Date, Calendar}
   import conversions._
 
+  // Conveniences
   implicit def number2Conversion(num: Int) = 
     new FromConversion(num)
 
@@ -14,24 +14,15 @@ object implicits {
       new Scalendar(time.getTime)
   }
 
+  // From Java Things
   implicit def fromDate(date: Date) = 
     new Scalendar(date.getTime)
-
   implicit def fromCalendar(cal: Calendar) = 
     new Scalendar(cal.getTimeInMillis)
 
-  implicit def toDate(cal: Scalendar): Date = 
-    new Date(cal.time)
-
-  implicit def toCalendar(cal: Scalendar): Calendar = {
-    val newtime = Calendar.getInstance
-    newtime.setTimeInMillis(cal.time)
-    newtime
-  }
-
-  implicit def evalToPeriod(evaluated: Evaluated) = {
-    Period(evaluated :: Nil)
-  }
+  // To Java things
+  implicit def toDate(cal: Scalendar): Date = cal.date 
+  implicit def toCalendar(cal: Scalendar): Calendar = cal.cal
 
   // Use these only when necessary
   implicit def day2Int(day: Day.Value) = day.id

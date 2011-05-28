@@ -1,8 +1,8 @@
 package com.github.philcali.scalendar
 
-import implicits._
 import conversions._
 import operations.RichSupport
+import java.util.Calendar
 
 class Duration(from: Long, last: Long) extends RichSupport {
   val start = new Scalendar(from)
@@ -10,7 +10,11 @@ class Duration(from: Long, last: Long) extends RichSupport {
 
   // This gives a duration rather strong support for
   // pulling calendar values
-  protected val javaTime = toCalendar(start)
+  protected val javaTime = {
+    val cal = Calendar.getInstance
+    cal.setTimeInMillis(start.time)
+    cal
+  }
 
   def delta = new ToConversion(end.time - start.time)
 
@@ -38,7 +42,7 @@ class Duration(from: Long, last: Long) extends RichSupport {
       }
 
       val newStart = repeat(start) 
-      val newEnd = newStart + newVal - (1 second)
+      val newEnd = newStart + newVal - Seconds(1)
 
       continueCond(newEnd) match {
         case true => fun(newStart to newEnd) :: traverseTimes(times + 1)

@@ -1,4 +1,6 @@
-lib*
+.DS*
+lib/
+lib_*
 target
 project/target
 project/boot

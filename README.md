@@ -12,10 +12,8 @@ Scalendar is a pure Scala date api that interoperates quite nicely with
 
 ## Construction
 
+    // Everything in single import
     import com.github.philcali.scalendar._
-    // All the conversion for adding time.
-    import implicits._  
-
 
     val now = Scalendar.now
 
@@ -152,7 +150,7 @@ View more examples of how to use the library in the test source file.
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
-    val scalendar = "com.github.philcali" %% "scalendar" % "0.0.3"
+    val scalendar = "com.github.philcali" %% "scalendar" % "0.0.4"
 
 ## Example Program
 
@@ -160,7 +158,6 @@ I have included a sample program, which includes parsing data from a
 log file, and checking its date.
 
     import com.github.philcali.scalendar._
-    import implicits._
 
     // Log time pattern
     implicit val pattern = Pattern("M/d/yyy")
