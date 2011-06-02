@@ -44,14 +44,15 @@ object Scalendar {
 
   def apply(millis: Long) = new Scalendar(millis)
 
-  def apply(year: Int, month: Int, day: Int) = 
-    beginDay(now).year(year).month(month).day(day)
+  def apply(year: Int, month: Int, day: Int) = {
+    beginDay(now).day(day).month(month).year(year)
+  }
 
   def apply(year: Int, month: Int, day: Int, hour: Int,
             minute: Int, second: Int, millisecond: Int) = 
-    now.year(year)
+    now.day(day)
        .month(month)
-       .day(day)
+       .year(year)
        .hour(hour)
        .minute(minute)
        .second(second)
