@@ -147,6 +147,30 @@ class CalendarSpec extends FlatSpec with ShouldMatchers with CalendarImplicits {
     Scalendar.endWeek(time) should be === expected3
   }
 
+  it should "be completely immutable" in {
+    val current = Scalendar(2011, 4, 20)
+    val begin = current.day(1)
+
+    val day = Day.Thursday.id
+
+    val rtn = begin to (begin + 1.week) by 1.day find (_.inWeek == day) map { d =>
+      (1 to 2).map(_ => d.start + 2.weeks).find(_ >= current) match {
+        case Some(t) => begin 
+        case None => begin 
+      }
+    } getOrElse begin
+
+    begin should be === rtn
+  }
+
+  it should "rolling the month should appropriate the days" in {
+    val lastday = Scalendar(2011, 5, 31)
+    
+    val expected = Scalendar(2011, 6, 30)
+
+    lastday + 1.month should be === expected
+  }
+
   "Durations" should "be able to create nifty UI elements" in {
     val html = 
 <table>{
