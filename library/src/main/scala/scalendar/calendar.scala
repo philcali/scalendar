@@ -45,19 +45,20 @@ object Scalendar {
   def apply(millis: Long) = new Scalendar(millis)
 
   def apply(year: Int, month: Int, day: Int) = {
-    beginDay(now).day(day).month(month).year(year)
+    beginDay(now).year(year).day(1).month(month).day(day)
   }
 
   def apply(year: Int, month: Int, day: Int, hour: Int,
-            minute: Int, second: Int, millisecond: Int) = 
-    now.day(day)
-       .month(month)
-       .year(year)
+            minute: Int, second: Int): Scalendar = 
+    apply(year, month, day)
        .hour(hour)
        .minute(minute)
        .second(second)
-       .millisecond(millisecond)
  
+  def apply(year: Int, month: Int, day: Int, hour: Int,
+            minute: Int, second: Int, millisecond: Int): Scalendar = 
+    apply(year, month, day, hour, minute, second).millisecond(millisecond)
+
   def dayOfWeek(day: Int) = Day(day).toString
   
   def monthName(month: Int) = Month(month).toString
