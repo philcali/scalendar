@@ -1,6 +1,8 @@
 package com.github.philcali.scalendar.operations
 
 import com.github.philcali.scalendar._
+import conversions._
+
 import java.util.{TimeZone, Calendar}
 import Calendar._
 
@@ -171,9 +173,18 @@ trait MonthFieldOperations extends CalendarOperations {
   def month(t: Int) = set(MONTH, t - 1)
   def month(t: Month.Value): Scalendar = month(t.id) 
 
-  def month = new CalendarField {
+  def month = new MonthCalendarField 
+
+  class MonthCalendarField extends CalendarField {
     val value = javaTime.get(MONTH) + 1
     def name = Scalendar.monthName(value)
+   
+    def duration = {
+      val working = Scalendar.beginDay(
+        Scalendar(javaTime.getTimeInMillis)
+      ).day(1)
+      working to (working.day(1) + Months(1) - Days(1))
+    } 
   }
 }
 
