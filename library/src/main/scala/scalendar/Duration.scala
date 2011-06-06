@@ -30,6 +30,10 @@ class Duration(from: Long, last: Long) extends RichSupport {
   def - (duration: Duration) =
     new Duration(start.time, end.time - duration.delta.milliseconds)
 
+  def occurrencesOf(day: Day.Value) = {
+    by (Days(1)) filter (_.inWeek == day.id) map(_.start)
+  }
+
   def traverse[A](value: Evaluated)(fun: Duration => A): List[A] = {
     val mult = if(delta.milliseconds < 0) -1 else 1
     val newVal = Evaluated(value.field, value.number * mult)
