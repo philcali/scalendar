@@ -10,7 +10,7 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 publishMavenStyle := true
 
-scalaVersion := "0.0.9"
+scalaVersion := "2.9.0"
 
 crossScalaVersions := Seq ("2.9.0", "2.8.1", "2.8.0") 
 
