@@ -183,7 +183,7 @@ trait MonthFieldOperations extends CalendarOperations {
       val working = Scalendar.beginDay(
         Scalendar(javaTime.getTimeInMillis)
       ).day(1)
-      working to (working.day(1) + Months(1) - Days(1))
+      working to (working + Months(1) - Milliseconds(1))
     } 
   }
 }

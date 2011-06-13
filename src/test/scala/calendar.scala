@@ -171,6 +171,13 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     lastday + 1.month should be === expected
   }
 
+  it should "be able to produce month durations fairly easily" in {
+    val june = Scalendar(2011, 6, 15)
+   
+    val days = june.month.duration by 1.day 
+    days.size should be === 30
+  }
+
   "Durations" should "be able to create nifty UI elements" in {
     val html = 
 <table>{
@@ -188,6 +195,17 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     (html \\ "tr").size should be === 5
     (html \\ "td").size should be === 35
     testDays.mkString(",") should be === "6,7,8,9,10,11,12"
+  }
+
+  it should "be able to filter easily" in {
+    val june = Scalendar(2011, 6, 15).month.duration
+
+    import Day.Monday    
+
+    val mondays = june occurrencesOf Monday
+
+    mondays.size should be === 4
+    mondays map (_.day.value) mkString(",") should be === "6,13,20,27"
   }
 
   "TimeZones" should "be settable like any other calendar field" in {
