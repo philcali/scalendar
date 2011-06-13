@@ -10,7 +10,7 @@ import java.util.Calendar
 import java.util.Calendar._
 
 // Test our Implicits too
-class CalendarSpec extends FlatSpec with ShouldMatchers with CalendarImplicits {
+class CalendarSpec extends FlatSpec with ShouldMatchers {
   val stuck = {
     val cal = Calendar.getInstance
     // February 1, 2011
