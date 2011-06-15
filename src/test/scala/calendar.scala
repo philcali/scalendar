@@ -10,7 +10,7 @@ import java.util.Calendar
 import java.util.Calendar._
 
 // Test our Implicits too
-class CalendarSpec extends FlatSpec with ShouldMatchers with CalendarImplicits {
+class CalendarSpec extends FlatSpec with ShouldMatchers {
   val stuck = {
     val cal = Calendar.getInstance
     // February 1, 2011
@@ -147,6 +147,37 @@ class CalendarSpec extends FlatSpec with ShouldMatchers with CalendarImplicits {
     Scalendar.endWeek(time) should be === expected3
   }
 
+  it should "be completely immutable" in {
+    val current = Scalendar(2011, 4, 20)
+    val begin = current.day(1)
+
+    val day = Day.Thursday.id
+
+    val rtn = begin to (begin + 1.week) by 1.day find (_.inWeek == day) map { d =>
+      (1 to 2).map(_ => d.start + 2.weeks).find(_ >= current) match {
+        case Some(t) => begin 
+        case None => begin 
+      }
+    } getOrElse begin
+
+    begin should be === rtn
+  }
+
+  it should "rolling the month should appropriate the days" in {
+    val lastday = Scalendar(2011, 5, 31)
+    
+    val expected = Scalendar(2011, 6, 30)
+
+    lastday + 1.month should be === expected
+  }
+
+  it should "be able to produce month durations fairly easily" in {
+    val june = Scalendar(2011, 6, 15)
+   
+    val days = june.month.duration by 1.day 
+    days.size should be === 30
+  }
+
   "Durations" should "be able to create nifty UI elements" in {
     val html = 
 <table>{
@@ -164,6 +195,17 @@ class CalendarSpec extends FlatSpec with ShouldMatchers with CalendarImplicits {
     (html \\ "tr").size should be === 5
     (html \\ "td").size should be === 35
     testDays.mkString(",") should be === "6,7,8,9,10,11,12"
+  }
+
+  it should "be able to filter easily" in {
+    val june = Scalendar(2011, 6, 15).month.duration
+
+    import Day.Monday    
+
+    val mondays = june occurrencesOf Monday
+
+    mondays.size should be === 4
+    mondays map (_.day.value) mkString(",") should be === "6,13,20,27"
   }
 
   "TimeZones" should "be settable like any other calendar field" in {

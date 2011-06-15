@@ -1,6 +1,6 @@
-package com.github.philcali.scalendar
+package com.github.philcali
 
-trait CalendarImplicits {
+package object scalendar {
   import java.util.{Date, Calendar}
   import conversions._
 
