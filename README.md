@@ -141,6 +141,7 @@ View more examples of how to use the library in the test source file.
 ## Requirements
 
   * scala (Cross compiled / published)
+    * 2.9.0-1
     * 2.9.0 
     * 2.8.1 
     * 2.8.0
