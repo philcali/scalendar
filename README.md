@@ -141,6 +141,7 @@ View more examples of how to use the library in the test source file.
 ## Requirements
 
   * scala (Cross compiled / published)
+    * 2.9.1
     * 2.9.0-1
     * 2.9.0 
     * 2.8.1 
@@ -150,7 +151,7 @@ View more examples of how to use the library in the test source file.
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
-    val scalendar = "com.github.philcali" %% "scalendar" % "0.0.5"
+    libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.0"
 
 ## Example Program
 
