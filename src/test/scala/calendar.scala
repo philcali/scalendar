@@ -1,6 +1,6 @@
-package com.github.philcali.scalendar.test
+package scalendar
+package test
 
-import com.github.philcali.scalendar._
 import conversions._
 
 import org.scalatest.FlatSpec
