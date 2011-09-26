@@ -17,6 +17,7 @@ package object scalendar {
   // From Java Things
   implicit def fromDate(date: Date) = 
     new Scalendar(date.getTime)
+
   implicit def fromCalendar(cal: Calendar) = 
     new Scalendar(cal.getTimeInMillis)
 
