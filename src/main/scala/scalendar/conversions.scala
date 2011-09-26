@@ -1,7 +1,7 @@
-package com.github.philcali.scalendar.conversions
+package scalendar
+package conversions
 
 import java.util.Calendar._
-import com.github.philcali.scalendar.Scalendar
 
 sealed trait PeriodBuilder {
   val fields: List[Evaluated]

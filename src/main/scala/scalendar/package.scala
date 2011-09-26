@@ -1,5 +1,3 @@
-package com.github.philcali
-
 package object scalendar {
   import java.util.{Date, Calendar}
   import conversions._

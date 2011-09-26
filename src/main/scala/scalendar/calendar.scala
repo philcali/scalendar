@@ -1,4 +1,4 @@
-package com.github.philcali.scalendar
+package scalendar
 
 import conversions._
 import operations.RichSupport

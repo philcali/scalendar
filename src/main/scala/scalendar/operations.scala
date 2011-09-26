@@ -1,6 +1,6 @@
-package com.github.philcali.scalendar.operations
+package scalendar
+package operations
 
-import com.github.philcali.scalendar._
 import conversions._
 
 import java.util.{TimeZone, Calendar}
