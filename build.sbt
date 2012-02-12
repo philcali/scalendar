@@ -27,7 +27,7 @@ publishMavenStyle := true
 
 publishArtifact in Test := false
 
-publishArtifact in (Compile, packageDoc) := false
+unmanagedClasspath in Compile += Attributed.blank(new java.io.File("doesnotexist"))
 
 pomIncludeRepository := { x => false }
 
