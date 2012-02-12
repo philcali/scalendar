@@ -151,7 +151,7 @@ View more examples of how to use the library in the test source file.
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
-    libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.0"
+    libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.1"
 
 ## Example Program
 
