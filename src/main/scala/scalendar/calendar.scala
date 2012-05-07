@@ -40,11 +40,17 @@ object Pattern {
 }
 
 object Scalendar {
-  def now = new Scalendar() 
+  def now = new Scalendar(Calendar.getInstance())
 
-  def apply(millis: Long) = new Scalendar(millis)
+  def apply(calendar: Calendar): Scalendar = new Scalendar(calendar)
 
-  def apply(year: Int, month: Int, day: Int) = {
+  def apply(millis: Long): Scalendar = {
+    val cal = Calendar.getInstance()
+    cal.setTimeInMillis(millis)
+    new Scalendar(cal)
+  }
+
+  def apply(year: Int, month: Int, day: Int): Scalendar = {
     beginDay(now).year(year).day(1).month(month).day(day)
   }
 
@@ -109,17 +115,13 @@ object CalendarMonthDuration {
   }
 }
 
-class Scalendar(now: Long) extends Ordered[Scalendar] 
+class Scalendar(calendar: Calendar) extends Ordered[Scalendar] 
                               with RichSupport {  
   import Scalendar._
 
-  def this() = this(System.currentTimeMillis)
+  def this() = this(Calendar.getInstance())
 
-  protected val javaTime = {
-    val calendar = Calendar.getInstance()
-    calendar.setTimeInMillis(now)
-    calendar
-  }
+  protected val javaTime = calendar
 
   def compare(that: Scalendar) = this.time compare that.time
 
@@ -131,7 +133,7 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
 
   def time = javaTime.getTimeInMillis 
 
-  def copy = new Scalendar(time)
+  def copy = Scalendar(time)
 
   def + (period: Period): Scalendar = period.fields.foldLeft (this) (_ + _)
   def - (period: Period): Scalendar = period.fields.foldLeft (this) (_ - _)
@@ -143,7 +145,7 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
     
     val diff = newTime.getTimeInMillis - time
     
-    new Scalendar(time + diff)
+    Scalendar(time + diff)
   }
 
   def -(eval: Evaluated) = this + eval.negate 
@@ -166,5 +168,6 @@ class Scalendar(now: Long) extends Ordered[Scalendar]
   // Explicit conversions to java time
   def date = new java.util.Date(time)
   def cal = copyTime
+
   override def toString = Pattern("MM/dd/yyyy HH:mm:ss").format(javaTime.getTime)
 }

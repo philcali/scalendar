@@ -9,15 +9,13 @@ package object scalendar {
   implicit def fromString(dateString: String)
                          (implicit pattern: java.text.SimpleDateFormat) = {
       val time = pattern.parse(dateString)
-      new Scalendar(time.getTime)
+      Scalendar(time.getTime)
   }
 
   // From Java Things
-  implicit def fromDate(date: Date) = 
-    new Scalendar(date.getTime)
+  implicit def fromDate(date: Date) = Scalendar(date.getTime)
 
-  implicit def fromCalendar(cal: Calendar) = 
-    new Scalendar(cal.getTimeInMillis)
+  implicit def fromCalendar(cal: Calendar) = new Scalendar(cal)
 
   // To Java things
   implicit def toDate(cal: Scalendar): Date = cal.date 

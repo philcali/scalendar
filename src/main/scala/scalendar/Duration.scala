@@ -5,8 +5,8 @@ import operations.RichSupport
 import java.util.Calendar
 
 class Duration(from: Long, last: Long) extends RichSupport {
-  val start = new Scalendar(from)
-  val end = new Scalendar(last)
+  val start = Scalendar(from)
+  val end = Scalendar(last)
 
   // This gives a duration rather strong support for
   // pulling calendar values

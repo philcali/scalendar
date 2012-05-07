@@ -22,7 +22,7 @@ trait CalendarOperations {
   def set(typ: Int, value: Int) = {
     val copied = copyTime
     copied.set(typ, value)
-    new Scalendar(copied.getTimeInMillis)
+    Scalendar(copied.getTimeInMillis)
   }
 }
 
@@ -39,22 +39,11 @@ abstract class CalendarField {
 }
 
 trait TimeZoneOperations extends CalendarOperations {
-  // Mess with the system time zone, and return something
-  // I'm not a big fan of this, but it works for now.
-  private def withZoned[A](t: TimeZone)(body: TimeZone => A): A = {
-    val current = TimeZone.getDefault
-    TimeZone.setDefault(t)
-    val rtn = body(current)
-    TimeZone.setDefault(current)
-    rtn
-  }
-
-  def tz(t: TimeZone): Scalendar = withZoned(t) { old =>
+  def tz(t: TimeZone): Scalendar = {
     val copied = copyTime
-    val newTime = t.getOffset(copied.getTimeInMillis)
-    val oldTime = old.getOffset(copied.getTimeInMillis)
+    copied.setTimeZone(t)
 
-    new Scalendar(copied.getTimeInMillis - (oldTime - newTime))
+    new Scalendar(copied)
   }
 
   def tz(id: String): Scalendar = tz(TimeZone.getTimeZone(id))
@@ -79,7 +68,7 @@ trait TimeZoneOperations extends CalendarOperations {
 
     // Offsets this time to that time
     def offsetTime(other: Scalendar) = 
-      new Scalendar(copyTime.getTimeInMillis + offset(other))
+      Scalendar(copyTime.getTimeInMillis + offset(other))
 
     def inDaylightTime = internal.inDaylightTime(javaTime.getTime)
   }

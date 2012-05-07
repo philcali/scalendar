@@ -20,7 +20,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
 
   implicit val pattern = Pattern("M/d/yyyy")
 
-  val test = new Scalendar(stuck.getTimeInMillis)
+  val test = Scalendar(stuck.getTimeInMillis)
 
   "Internal Calendar" should "pull the right month" in {
     test.month.name should be === "February"
@@ -221,6 +221,7 @@ class CalendarSpec extends FlatSpec with ShouldMatchers {
     indian.tz.offset should be === indiantz.getRawOffset 
     cst.tz.offset should be === csttz.getRawOffset
 
+    // Offsets from each other
     cst.tz.offset(indian) should be === 12 * 1000 * 60 * 60
   }
 

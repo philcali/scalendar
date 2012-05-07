@@ -112,8 +112,8 @@ object Main {
       val est = current.tz("EST5EDT")
 
       line("Setting a new timezone for an existing date") {
-        println(pst)
-        println(est)
+        println(current.tz.offsetTime(pst))
+        println(current.tz.offsetTime(est))
       }
 
       line("Determining the offset from GMT or other time") {
