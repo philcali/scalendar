@@ -18,7 +18,7 @@ class Duration(from: Long, last: Long) extends RichSupport {
 
   def delta = new ToConversion(end.time - start.time)
 
-  def to(spot: Scalendar) = 
+  def to(spot: Scalendar) =
     new Duration(start.time, spot.time)
 
   def to(duration: Duration) =
@@ -53,7 +53,7 @@ class Duration(from: Long, last: Long) extends RichSupport {
         case false => Nil
       }
     }
-    
+
     traverseTimes(0)
   }
 

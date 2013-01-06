@@ -15,7 +15,7 @@ object Month extends Enumeration(1) {
   val June = Value("June")
   val July = Value("July")
   val August = Value("August")
-  val September = Value("September") 
+  val September = Value("September")
   val October = Value("October")
   val November = Value("November")
   val December = Value("December")
@@ -33,7 +33,7 @@ object Day extends Enumeration(1) {
 }
 
 object Pattern {
-  def apply(pattern: String) = 
+  def apply(pattern: String) =
     new java.text.SimpleDateFormat(pattern)
   def unapply(formatter: java.text.SimpleDateFormat) =
     Some(formatter.toPattern)
@@ -60,13 +60,13 @@ object Scalendar {
        .hour(hour)
        .minute(minute)
        .second(second)
- 
+
   def apply(year: Int, month: Int, day: Int, hour: Int,
             minute: Int, second: Int, millisecond: Int): Scalendar = 
     apply(year, month, day, hour, minute, second).millisecond(millisecond)
 
   def dayOfWeek(day: Int) = Day(day).toString
-  
+
   def monthName(month: Int) = Month(month).toString
 
   def daynames = (1 to 7).map (Day(_).toString.substring(0,3))
@@ -115,8 +115,7 @@ object CalendarMonthDuration {
   }
 }
 
-class Scalendar(calendar: Calendar) extends Ordered[Scalendar] 
-                              with RichSupport {  
+class Scalendar(calendar: Calendar) extends Ordered[Scalendar] with RichSupport {
   import Scalendar._
 
   def this() = this(Calendar.getInstance())
@@ -131,7 +130,7 @@ class Scalendar(calendar: Calendar) extends Ordered[Scalendar]
     case _ => false
   }
 
-  def time = javaTime.getTimeInMillis 
+  def time = javaTime.getTimeInMillis
 
   def copy = Scalendar(time)
 
@@ -142,28 +141,28 @@ class Scalendar(calendar: Calendar) extends Ordered[Scalendar]
     val newTime = Calendar.getInstance
     newTime.setTimeInMillis(time)
     newTime.add(eval.field, eval.number)
-    
+
     val diff = newTime.getTimeInMillis - time
-    
+
     Scalendar(time + diff)
   }
 
-  def -(eval: Evaluated) = this + eval.negate 
+  def -(eval: Evaluated) = this + eval.negate
 
-  def isIn(duration: Duration) = 
+  def isIn(duration: Duration) =
     time >= duration.start.time && time <= duration.end.time
 
-  def to(to: Scalendar) = 
+  def to(to: Scalendar) =
     new Duration(time, to.time)
 
-  def to(to: Long) = 
+  def to(to: Long) =
     new Duration(time, to)
 
-  def calendarMonth = CalendarMonthDuration(this) 
-  
-  def calendarWeek = CalendarWeekDuration(this) 
+  def calendarMonth = CalendarMonthDuration(this)
 
-  def calendarDay = CalendarDayDuration(this) 
+  def calendarWeek = CalendarWeekDuration(this)
+
+  def calendarDay = CalendarDayDuration(this)
 
   // Explicit conversions to java time
   def date = new java.util.Date(time)

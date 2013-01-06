@@ -6,10 +6,8 @@ import java.util.Calendar._
 sealed trait PeriodBuilder {
   val fields: List[Evaluated]
 
-  def + (other: Evaluated) = 
-    Period(other :: fields)
-  def - (other: Evaluated) = 
-    Period(other.negate :: fields)
+  def + (other: Evaluated) = Period(other :: fields)
+  def - (other: Evaluated) = Period(other.negate :: fields)
   def milliseconds = {
     val now = Scalendar.now
     val future = fields.foldLeft(now)(_ + _)

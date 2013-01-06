@@ -8,7 +8,7 @@ import Calendar._
 
 trait CalendarOperations {
   protected val javaTime: Calendar
-  
+
   def millisecond(t: Int) = set(MILLISECOND, t)
   def millisecond = javaTime.get(MILLISECOND)
 
@@ -167,7 +167,7 @@ trait MonthFieldOperations extends CalendarOperations {
   class MonthCalendarField extends CalendarField {
     val value = javaTime.get(MONTH) + 1
     def name = Scalendar.monthName(value)
-   
+
     def duration = {
       val working = Scalendar.beginDay(
         Scalendar(javaTime.getTimeInMillis)
@@ -186,7 +186,7 @@ trait YearFieldOperations extends CalendarOperations {
   }
 }
 
-trait RichSupport extends YearFieldOperations 
+trait RichSupport extends YearFieldOperations
                      with MonthFieldOperations
                      with WeekFieldOperations
                      with DayFieldOperations
