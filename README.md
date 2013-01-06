@@ -20,7 +20,7 @@ val now = Scalendar.now
 
 // Normalcy
 // 3 is March
-// Include these enumerations is you get confused
+// Include these enumerations if you get confused
 // ie: What day is Sunday? 0, 1, 7? Use Day.Sunday
 import Month._
 import Day._
@@ -35,7 +35,7 @@ val wed = now.day.inWeek(Wednesday)
 
 ## Date Arithmetic
 
-Adding to a time, could never be easier.
+Adding to a time could not be easier.
 
 ``` scala
 val tomorrow = Scalendar.now + 1.day
@@ -49,7 +49,7 @@ val away = far + 5.years + 14.months - 5667.days
 
 Scalendar API provides a very uniform way to access calendar fields.
 Every field has a `name` that tries to create an English name for the
-field, and a `value`, which is its integer value
+field, and a `value`, which is its numeric value:
 
 ``` scala
 val now = Scalendar.now
@@ -82,7 +82,7 @@ val pst = now.tz("PST")
 tz.offset
 
 // Find the offset (in millis) from another TZ
-tz.offset(pst)    
+tz.offset(pst)
 ```
 
 ## Time Converions / Periods
@@ -111,7 +111,7 @@ the `to` dsl word.
 ``` scala
 val duration = Scalendar.now to Scalendar.now + 1.week
 
-// Determining delta 
+// Determining delta
 duration.delta.days
 duration.delta.months
 // etc
@@ -124,7 +124,7 @@ There are two ways to traverse a duration:
   1. The `traverse` method
   2. The `by` dsl word
 
-The follow codez, will illustrate their use.
+The following code will illustrate their use:
 
 ``` scala
 // by will return a list of durations, which
@@ -136,7 +136,7 @@ val mwf = duration by 1.day filter(_.day.value match {
 })
 
 // traverse returns by traversal
-val html = 
+val html =
 <table>{
   duration.traverse(1.week) { weekDur =>
     <tr>{
@@ -155,6 +155,7 @@ View more examples of how to use the library in the test source file.
 ## Requirements
 
   * scala (Cross compiled / published)
+    * 2.10.0
     * 2.9.2
     * 2.9.1-1
     * 2.9.1
@@ -168,7 +169,7 @@ View more examples of how to use the library in the test source file.
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
 ```
-libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.2"
+libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.4"
 ```
 
 ## Example Program
@@ -190,7 +191,7 @@ val dayIn = (Scalendar.now - 1.day) to Scalendar.now
 // open csv
 import scala.io.Source.{ fromFile => open }
 
-// Prints out log entry 
+// Prints out log entry
 for(line <- open("test.log").getLines;
   val split = line.split(",");
   val time = split(3);
