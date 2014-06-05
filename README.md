@@ -130,8 +130,8 @@ The following code will illustrate their use:
 // by will return a list of durations, which
 // can be operated on as a List
 // This only returns MWF
-val mwf = duration by 1.day filter(_.day.value match {
-  case Monday | Wednesday | Friday => true
+val mwf = duration by 1.day filter(_.day.name match {
+  case "Monday" | "Wednesday" | "Friday" => true
   case _ => false
 })
 
