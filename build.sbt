@@ -2,29 +2,32 @@ organization := "com.github.philcali"
 
 name := "scalendar"
 
-version := "0.1.4"
+version := "0.1.5"
 
-scalaVersion := "2.11.0"
+scalaVersion := "2.12.1"
 
 crossScalaVersions := Seq (
-  "2.11.0",
-  "2.10.3",
-  "2.9.2", "2.9.1", "2.9.1-1","2.9.0-1", "2.9.0"
+  "2.12.1",
+  "2.11.8", "2.11.0",
+  "2.10.3"
 )
 
+def isSvHigh(sv: String): Boolean = {
+  (sv startsWith "2.11") || (sv startsWith "2.12")
+}
+
 scalacOptions <++= scalaVersion map {
-  case sv if sv startsWith "2.11" => Seq("-feature", "-language:implicitConversions")
+  case sv if isSvHigh(sv) => 
+    Seq("-feature", "-language:implicitConversions")
   case _ => Nil
 }
 
 libraryDependencies <++= scalaVersion {
-  case sv if sv startsWith "2.11" => Seq(
-    "org.scala-lang.modules" %% "scala-xml" % "1.0.1" % "test",
-    "org.scalatest" %% "scalatest" % "2.1.3" % "test")
-  case sv if sv startsWith "2.10" =>
-  Seq("org.scalatest" %% "scalatest" % "1.9" % "test")
+  case sv if isSvHigh(sv) => Seq(
+    "org.scala-lang.modules" %% "scala-xml" % "1.0.6" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.1" % "test")
   case _ =>
-  Seq("org.scalatest" %% "scalatest" % "1.8" % "test")
+    Seq("org.scalatest" %% "scalatest" % "1.9" % "test")
 }
 
 publishTo <<= version { v =>
