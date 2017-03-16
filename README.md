@@ -155,21 +155,17 @@ View more examples of how to use the library in the test source file.
 ## Requirements
 
   * scala (Cross compiled / published)
-    * 2.10.0
-    * 2.9.2
-    * 2.9.1-1
-    * 2.9.1
-    * 2.9.0-1
-    * 2.9.0 
-    * 2.8.2 
-    * 2.8.1
+    * 2.12.1
+    * 2.11.8
+    * 2.11.0
+    * 2.10.3
 
 ## Using
 
 Installing the library as a dependency is easy using maven or sbt. In sbt,
 
 ```
-libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.4"
+libraryDependencies += "com.github.philcali" %% "scalendar" % "0.1.5"
 ```
 
 ## Example Program
