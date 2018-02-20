@@ -17,7 +17,7 @@ def isSvHigh(sv: String): Boolean = {
 }
 
 scalacOptions <++= scalaVersion map {
-  case sv if isSvHigh(sv) => 
+  case sv if isSvHigh(sv) =>
     Seq("-feature", "-language:implicitConversions")
   case _ => Nil
 }
@@ -27,7 +27,7 @@ libraryDependencies <++= scalaVersion {
     "org.scala-lang.modules" %% "scala-xml" % "1.0.6" % "test",
     "org.scalatest" %% "scalatest" % "3.0.1" % "test")
   case _ =>
-    Seq("org.scalatest" %% "scalatest" % "1.9" % "test")
+    Seq("org.scalatest" %% "scalatest" % "3.0.1" % "test")
 }
 
 publishTo <<= version { v =>
